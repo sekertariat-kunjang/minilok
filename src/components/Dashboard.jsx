@@ -101,18 +101,18 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                                     position: 'absolute',
                                     top: '110%',
                                     right: 0,
-                                    width: '300px',
+                                    width: '400px',
                                     maxHeight: '400px',
                                     background: 'white',
-                                    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-                                    borderRadius: '8px',
+                                    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)',
+                                    borderRadius: '12px',
                                     border: '1px solid var(--border)',
                                     zIndex: 100,
                                     padding: '1rem',
                                     overflowY: 'auto'
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '1px solid #f1f5f9', paddingBottom: '5px' }}>
-                                        <span style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Pilih Program</span>
+                                        <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: '#1e293b' }}>Pilih Program Laporan</span>
                                         <button
                                             style={{ color: 'var(--primary)', background: 'none', border: 'none', fontSize: '0.75rem', cursor: 'pointer' }}
                                             onClick={() => setSelectedActivityIds([])}
@@ -120,15 +120,27 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                                             Reset
                                         </button>
                                     </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                         {activities.map(a => (
-                                            <label key={a.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.8rem', cursor: 'pointer', padding: '4px' }}>
+                                            <label
+                                                key={a.id}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'flex-start',
+                                                    gap: '10px',
+                                                    fontSize: '0.85rem',
+                                                    cursor: 'pointer',
+                                                    padding: '6px 8px',
+                                                    borderRadius: '4px'
+                                                }}
+                                            >
                                                 <input
                                                     type="checkbox"
+                                                    style={{ marginTop: '4px' }}
                                                     checked={selectedActivityIds.includes(a.id)}
                                                     onChange={() => toggleActivitySelection(a.id)}
                                                 />
-                                                <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{a.name}</span>
+                                                <span style={{ lineHeight: '1.4' }}>{a.name}</span>
                                             </label>
                                         ))}
                                     </div>
