@@ -120,27 +120,33 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                                             Reset
                                         </button>
                                     </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
                                         {activities.map(a => (
                                             <label
                                                 key={a.id}
                                                 style={{
                                                     display: 'flex',
                                                     alignItems: 'flex-start',
-                                                    gap: '10px',
+                                                    justifyContent: 'flex-start',
+                                                    gap: '12px',
                                                     fontSize: '0.85rem',
                                                     cursor: 'pointer',
-                                                    padding: '6px 8px',
-                                                    borderRadius: '4px'
+                                                    padding: '8px 12px',
+                                                    borderRadius: '6px',
+                                                    textAlign: 'left',
+                                                    width: '100%',
+                                                    transition: 'background 0.2s'
                                                 }}
+                                                onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
+                                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    style={{ marginTop: '4px' }}
+                                                    style={{ marginTop: '4px', cursor: 'pointer', flexShrink: 0 }}
                                                     checked={selectedActivityIds.includes(a.id)}
                                                     onChange={() => toggleActivitySelection(a.id)}
                                                 />
-                                                <span style={{ lineHeight: '1.4' }}>{a.name}</span>
+                                                <span style={{ lineHeight: '1.4', color: '#334155', flexGrow: 1 }}>{a.name}</span>
                                             </label>
                                         ))}
                                     </div>
