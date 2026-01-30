@@ -1,136 +1,189 @@
-import { CLUSTERS } from '../constants/appConstants';
-
-const STORAGE_KEY = 'minilok_data';
+import { supabase } from '../lib/supabase';
 
 class ApiService {
-    constructor() {
-        this.data = this._loadFromStorage();
-    }
-
-    _loadFromStorage() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try {
-                return JSON.parse(saved);
-            } catch (e) {
-                console.error('Failed to parse storage data', e);
-                return this._getInitialData();
-            }
-        }
-        return this._getInitialData();
-    }
-
-    _saveToStorage() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
-    }
-
-    _getInitialData() {
-        return {
-            activities: [], // { id, clusterId, name, targetValue, targetLogic }
-            achievements: [], // { activityId, month, value, year }
-            pdca: [] // { activityId, month, year, plan, do, check, action }
-        };
-    }
-
     // Activities
     async getActivities(clusterId) {
+        let query = supabase.from('activities').select('*').order('created_at', { ascending: true });
         if (clusterId) {
-            return this.data.activities.filter(a => a.clusterId === clusterId);
+            query = query.eq('cluster_id', clusterId);
         }
-        return this.data.activities;
+        const { data, error } = await query;
+        if (error) throw error;
+        // Map snake_case to camelCase if necessary, but here we'll try to keep them consistent
+        return data.map(item => ({
+            ...item,
+            clusterId: item.cluster_id,
+            targetValue: item.target_value,
+            targetLogic: item.target_logic
+        }));
     }
 
     async addActivity(activity) {
-        // Prevent exact duplicates (same name in same cluster)
-        const exists = this.data.activities.find(a =>
-            a.name.toLowerCase() === activity.name.toLowerCase() &&
-            a.clusterId === activity.clusterId
-        );
-        if (exists) return exists;
+        // Prevent exact duplicates
+        const { data: existing } = await supabase
+            .from('activities')
+            .select('id')
+            .eq('name', activity.name)
+            .eq('cluster_id', activity.clusterId)
+            .maybeSingle();
 
-        const newActivity = {
-            ...activity,
-            id: `act_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        if (existing) return existing;
+
+        const newId = `act_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const { data, error } = await supabase
+            .from('activities')
+            .insert([{
+                id: newId,
+                cluster_id: activity.clusterId,
+                name: activity.name,
+                target_value: activity.targetValue,
+                target_logic: activity.targetLogic
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+        return {
+            ...data,
+            clusterId: data.cluster_id,
+            targetValue: data.target_value,
+            targetLogic: data.target_logic
         };
-        this.data.activities.push(newActivity);
-        this._saveToStorage();
-        return newActivity;
     }
 
     async updateActivity(id, updates) {
-        const index = this.data.activities.findIndex(a => a.id === id);
-        if (index !== -1) {
-            this.data.activities[index] = { ...this.data.activities[index], ...updates };
-            this._saveToStorage();
-            return this.data.activities[index];
-        }
-        throw new Error('Activity not found');
+        const payload = {};
+        if (updates.name) payload.name = updates.name;
+        if (updates.clusterId) payload.cluster_id = updates.clusterId;
+        if (updates.targetValue) payload.target_value = updates.targetValue;
+        if (updates.targetLogic) payload.target_logic = updates.targetLogic;
+
+        const { data, error } = await supabase
+            .from('activities')
+            .update(payload)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        return {
+            ...data,
+            clusterId: data.cluster_id,
+            targetValue: data.target_value,
+            targetLogic: data.target_logic
+        };
     }
 
     async deleteActivity(id) {
-        this.data.activities = this.data.activities.filter(a => a.id !== id);
-        // Cleanup achievements and PDCA for this activity
-        this.data.achievements = this.data.achievements.filter(ach => ach.activityId !== id);
-        this.data.pdca = this.data.pdca.filter(p => p.activityId !== id);
-        this._saveToStorage();
+        // Cascading delete is handled by Supabase if configured, 
+        // but we'll manually ensure it just in case or for cleaner API response
+        const { error } = await supabase
+            .from('activities')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
         return true;
     }
 
     // Achievements
     async getAchievements(month, year, clusterId) {
-        let activities = this.data.activities;
+        // Link with activities to filter by clusterId
+        let query = supabase
+            .from('achievements')
+            .select('*, activities!inner(*)')
+            .eq('month', parseInt(month))
+            .eq('year', parseInt(year));
+
         if (clusterId) {
-            activities = activities.filter(a => a.clusterId === clusterId);
+            query = query.eq('activities.cluster_id', clusterId);
         }
 
-        const activityIds = activities.map(a => a.id);
-        return this.data.achievements.filter(ach =>
-            activityIds.includes(ach.activityId) &&
-            ach.month === parseInt(month) &&
-            ach.year === parseInt(year)
-        );
+        const { data, error } = await query;
+        if (error) throw error;
+
+        return data.map(item => ({
+            activityId: item.activity_id,
+            month: item.month,
+            year: item.year,
+            value: item.value
+        }));
     }
 
     async saveAchievement(achievement) {
-        // achievement: { activityId, month, year, value }
-        const index = this.data.achievements.findIndex(ach =>
-            ach.activityId === achievement.activityId &&
-            ach.month === achievement.month &&
-            ach.year === achievement.year
-        );
+        const { data, error } = await supabase
+            .from('achievements')
+            .upsert({
+                activity_id: achievement.activityId,
+                month: achievement.month,
+                year: achievement.year,
+                value: achievement.value
+            }, {
+                onConflict: 'activity_id,month,year'
+            })
+            .select()
+            .single();
 
-        if (index !== -1) {
-            this.data.achievements[index].value = achievement.value;
-        } else {
-            this.data.achievements.push(achievement);
-        }
-        this._saveToStorage();
-        return achievement;
+        if (error) throw error;
+        return {
+            activityId: data.activity_id,
+            month: data.month,
+            year: data.year,
+            value: data.value
+        };
     }
 
     // PDCA
     async getPDCA(activityId, month, year) {
-        return this.data.pdca.find(p =>
-            p.activityId === activityId &&
-            p.month === parseInt(month) &&
-            p.year === parseInt(year)
-        );
+        const { data, error } = await supabase
+            .from('pdca')
+            .select('*')
+            .eq('activity_id', activityId)
+            .eq('month', parseInt(month))
+            .eq('year', parseInt(year))
+            .maybeSingle();
+
+        if (error) throw error;
+        if (!data) return null;
+
+        return {
+            activityId: data.activity_id,
+            month: data.month,
+            year: data.year,
+            plan: data.plan,
+            do: data.do,
+            check: data.check,
+            action: data.action
+        };
     }
 
     async savePDCA(pdcaEntry) {
-        const index = this.data.pdca.findIndex(p =>
-            p.activityId === pdcaEntry.activityId &&
-            p.month === pdcaEntry.month &&
-            p.year === pdcaEntry.year
-        );
+        const { data, error } = await supabase
+            .from('pdca')
+            .upsert({
+                activity_id: pdcaEntry.activityId,
+                month: pdcaEntry.month,
+                year: pdcaEntry.year,
+                plan: pdcaEntry.plan,
+                do: pdcaEntry.do,
+                check: pdcaEntry.check,
+                action: pdcaEntry.action
+            }, {
+                onConflict: 'activity_id,month,year'
+            })
+            .select()
+            .single();
 
-        if (index !== -1) {
-            this.data.pdca[index] = { ...this.data.pdca[index], ...pdcaEntry };
-        } else {
-            this.data.pdca.push(pdcaEntry);
-        }
-        this._saveToStorage();
-        return pdcaEntry;
+        if (error) throw error;
+        return {
+            activityId: data.activity_id,
+            month: data.month,
+            year: data.year,
+            plan: data.plan,
+            do: data.do,
+            check: data.check,
+            action: data.action
+        };
     }
 }
 
