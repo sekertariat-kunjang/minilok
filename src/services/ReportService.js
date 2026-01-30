@@ -20,3 +20,39 @@ export const exportToPDF = async (elementId, filename) => {
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(filename);
 };
+
+export const exportSlidesToPDF = async (containerClassName, filename) => {
+    const elements = document.getElementsByClassName(containerClassName);
+    console.log('Slides found:', elements.length);
+
+    if (!elements || elements.length === 0) {
+        alert('Gagal: Tidak ada slide yang ditemukan. Pastikan data sudah termuat sempurna di Dashboard.');
+        return;
+    }
+
+    try {
+        const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape A4
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+        for (let i = 0; i < elements.length; i++) {
+            if (i > 0) pdf.addPage();
+
+            const canvas = await html2canvas(elements[i], {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                windowWidth: 1200,
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        }
+
+        pdf.save(filename);
+        alert('Slide berhasil dibuat dan didownload!');
+    } catch (error) {
+        console.error('Slide Export Error:', error);
+        alert('Error saat membuat slide: ' + error.message);
+    }
+};

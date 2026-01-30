@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { CLUSTERS, TARGET_LOGIC } from '../constants/appConstants';
 import apiService from '../services/ApiService';
-import { AlertCircle, CheckCircle2, TrendingUp, Download, ChevronDown, ChevronUp } from 'lucide-react';
-import { exportToPDF } from '../services/ReportService';
+import { AlertCircle, CheckCircle2, TrendingUp, Download, ChevronDown, ChevronUp, Monitor, FileText, Presentation } from 'lucide-react';
+import { exportToPDF, exportSlidesToPDF } from '../services/ReportService';
 
 const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) => {
     const [activities, setActivities] = useState([]);
@@ -137,7 +137,16 @@ const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) =>
                         </div>
 
                         <button
-                            className="btn btn-outline"
+                            className="btn"
+                            style={{
+                                background: '#0f766e',
+                                color: 'white',
+                                fontSize: '0.8rem',
+                                border: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                            }}
                             onClick={() => {
                                 const filename = selectedActivityIds.length === 1
                                     ? `Laporan_${activities.find(a => a.id === selectedActivityIds[0])?.name.replace(/\s+/g, '_')}.pdf`
@@ -145,11 +154,26 @@ const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) =>
                                 exportToPDF('full-report-content', filename);
                             }}
                         >
-                            <Download size={16} /> Export PDF
+                            <FileText size={16} /> Cetak Laporan
                         </button>
-                        <button className="btn btn-outline">
-                            <TrendingUp size={16} />
-                            Lihat Tren
+
+                        <button
+                            className="btn"
+                            style={{
+                                background: '#1d4ed8',
+                                color: 'white',
+                                fontSize: '0.8rem',
+                                border: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                            }}
+                            onClick={() => {
+                                const filename = `Slide_${cluster.name}_${selectedActivityIds.length > 0 ? 'Fokus' : 'Lengkap'}.pdf`;
+                                exportSlidesToPDF('report-slide', filename);
+                            }}
+                        >
+                            <Presentation size={16} /> Buat Slide Presentasi
                         </button>
                     </div>
                 </div>

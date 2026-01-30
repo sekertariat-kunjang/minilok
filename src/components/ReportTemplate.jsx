@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../services/ApiService';
 import { MONTHS, CLUSTERS } from '../constants/appConstants';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, RadialLinearScale } from 'chart.js';
 import { Bar, Line, Radar } from 'react-chartjs-2';
+
+ChartJS.register(CategoryScale, LinearScale, RadialLinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 import headerImg from '../assets/header.png';
 
 const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {

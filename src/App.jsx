@@ -9,6 +9,7 @@ import DataEntry from './components/DataEntry';
 import Analysis from './components/Analysis';
 import PDCA from './components/PDCA';
 import ReportTemplate from './components/ReportTemplate';
+import SlideReportTemplate from './components/SlideReportTemplate';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -116,8 +117,22 @@ function App() {
         )}
       </main>
       {/* Hidden Report Template for PDF Export */}
-      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', background: 'white' }}>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        opacity: 0,
+        pointerEvents: 'none',
+        background: 'white',
+        zIndex: -999
+      }}>
         <ReportTemplate
+          cluster={selectedCluster}
+          month={selectedMonth}
+          year={selectedYear}
+          filterActivityIds={exportFilter}
+        />
+        <SlideReportTemplate
           cluster={selectedCluster}
           month={selectedMonth}
           year={selectedYear}
