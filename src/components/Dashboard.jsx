@@ -135,18 +135,33 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                                                     borderRadius: '6px',
                                                     textAlign: 'left',
                                                     width: '100%',
-                                                    transition: 'background 0.2s'
+                                                    transition: 'background 0.2s',
+                                                    background: 'transparent'
                                                 }}
                                                 onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
                                                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    style={{ marginTop: '4px', cursor: 'pointer', flexShrink: 0 }}
+                                                    style={{
+                                                        marginTop: '4px',
+                                                        cursor: 'pointer',
+                                                        flexShrink: 0,
+                                                        width: '18px', // Fixed small width to override global 100%
+                                                        height: '18px',
+                                                        margin: 0
+                                                    }}
                                                     checked={selectedActivityIds.includes(a.id)}
                                                     onChange={() => toggleActivitySelection(a.id)}
                                                 />
-                                                <span style={{ lineHeight: '1.4', color: '#334155', flexGrow: 1 }}>{a.name}</span>
+                                                <span style={{
+                                                    lineHeight: '1.4',
+                                                    color: '#334155',
+                                                    flexGrow: 1,
+                                                    textAlign: 'left'
+                                                }}>
+                                                    {a.name}
+                                                </span>
                                             </label>
                                         ))}
                                     </div>
