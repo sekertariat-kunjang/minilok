@@ -8,15 +8,12 @@ import Dashboard from './components/Dashboard';
 import DataEntry from './components/DataEntry';
 import Analysis from './components/Analysis';
 import PDCA from './components/PDCA';
-import ReportTemplate from './components/ReportTemplate';
-import SlideReportTemplate from './components/SlideReportTemplate';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedCluster, setSelectedCluster] = useState(CLUSTERS[0]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [exportFilter, setExportFilter] = useState([]); // Array of activityIds
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -91,7 +88,6 @@ function App() {
             year={selectedYear}
             cluster={selectedCluster}
             onClusterChange={setSelectedCluster}
-            onFilterChange={setExportFilter}
           />
         )}
 
@@ -116,29 +112,6 @@ function App() {
           />
         )}
       </main>
-      {/* Hidden Report Template for PDF Export */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        opacity: 0,
-        pointerEvents: 'none',
-        background: 'white',
-        zIndex: -999
-      }}>
-        <ReportTemplate
-          cluster={selectedCluster}
-          month={selectedMonth}
-          year={selectedYear}
-          filterActivityIds={exportFilter}
-        />
-        <SlideReportTemplate
-          cluster={selectedCluster}
-          month={selectedMonth}
-          year={selectedYear}
-          filterActivityIds={exportFilter}
-        />
-      </div>
     </div>
   );
 }

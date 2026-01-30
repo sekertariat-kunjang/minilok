@@ -3,8 +3,10 @@ import { CLUSTERS, TARGET_LOGIC } from '../constants/appConstants';
 import apiService from '../services/ApiService';
 import { AlertCircle, CheckCircle2, TrendingUp, Download, ChevronDown, ChevronUp, Monitor, FileText, Presentation } from 'lucide-react';
 import { exportToPDF, exportSlidesToPDF } from '../services/ReportService';
+import ReportTemplate from './ReportTemplate';
+import SlideReportTemplate from './SlideReportTemplate';
 
-const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) => {
+const Dashboard = ({ month, year, cluster, onClusterChange }) => {
     const [activities, setActivities] = useState([]);
     const [achievements, setAchievements] = useState([]);
     const [selectedActivityIds, setSelectedActivityIds] = useState([]);
@@ -12,7 +14,6 @@ const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) =>
     useEffect(() => {
         loadData();
         setSelectedActivityIds([]); // Reset filter when cluster changes
-        onFilterChange([]);
     }, [cluster, month, year]);
 
     const loadData = async () => {
@@ -38,7 +39,6 @@ const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) =>
             const next = prev.includes(id)
                 ? prev.filter(item => item !== id)
                 : [...prev, id];
-            onFilterChange(next);
             return next;
         });
     };
@@ -115,7 +115,7 @@ const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) =>
                                         <span style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Pilih Program</span>
                                         <button
                                             style={{ color: 'var(--primary)', background: 'none', border: 'none', fontSize: '0.75rem', cursor: 'pointer' }}
-                                            onClick={() => { setSelectedActivityIds([]); onFilterChange([]); }}
+                                            onClick={() => setSelectedActivityIds([])}
                                         >
                                             Reset
                                         </button>
@@ -228,6 +228,30 @@ const Dashboard = ({ month, year, cluster, onClusterChange, onFilterChange }) =>
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {/* Hidden Report Templates for PDF Export - Localized state sync */}
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                opacity: 0,
+                pointerEvents: 'none',
+                background: 'white',
+                zIndex: -999
+            }}>
+                <ReportTemplate
+                    cluster={cluster}
+                    month={month}
+                    year={year}
+                    filterActivityIds={selectedActivityIds}
+                />
+                <SlideReportTemplate
+                    cluster={cluster}
+                    month={month}
+                    year={year}
+                    filterActivityIds={selectedActivityIds}
+                />
             </div>
         </div>
     );
