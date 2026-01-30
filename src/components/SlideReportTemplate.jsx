@@ -18,17 +18,19 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                 activities = activities.filter(a => filterActivityIds.includes(a.id));
             }
 
-            const slideData = [];
-            for (const a of activities) {
-                const ach = achievements.find(ach => ach.activityId === a.id);
-                const pdca = await apiService.getPDCA(a.id, month, year);
+            // [OPTIMIZATION] Bulk fetch PDCA data
+            const allPdca = await apiService.getBulkPDCA(month, year, cluster.id);
 
-                slideData.push({
+            const slideData = activities.map(a => {
+                const ach = achievements.find(ach => ach.activityId === a.id);
+                const pdca = allPdca.find(p => p.activityId === a.id);
+
+                return {
                     activity: a,
                     achievement: ach || { value: 0 },
                     pdca: pdca || { plan: '-', do: '-', check: '-', action: '-' }
-                });
-            }
+                };
+            });
 
             setData({ slideData });
         };
@@ -63,8 +65,8 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             </p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: (item.achievement.value / item.activity.targetValue) >= 1 ? '#059669' : '#dc2626' }}>
-                                {((item.achievement.value / item.activity.targetValue) * 100).toFixed(1)}%
+                            <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: (item.activity.targetValue > 0 && (item.achievement.value / item.activity.targetValue) >= 1) ? '#059669' : '#dc2626' }}>
+                                {item.activity.targetValue > 0 ? ((item.achievement.value / item.activity.targetValue) * 100).toFixed(1) : '0.0'}%
                             </div>
                             <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Capaian Kinerja</div>
                         </div>
@@ -136,7 +138,7 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                                             labels: ['Bulan 1', 'Bulan 2', 'Bulan 3', 'Bulan 4', 'Bulan 5'],
                                             datasets: [{
                                                 label: 'Kinerja',
-                                                data: [80, 85, 90, 75, (item.achievement.value / item.activity.targetValue) * 100],
+                                                data: [80, 85, 90, 75, item.activity.targetValue > 0 ? Math.min((item.achievement.value / item.activity.targetValue) * 100, 100) : 0],
                                                 backgroundColor: 'rgba(13, 148, 136, 0.2)',
                                                 borderColor: '#0d9488'
                                             }]

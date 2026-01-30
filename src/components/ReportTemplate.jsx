@@ -20,21 +20,20 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                 activities = activities.filter(a => filterActivityIds.includes(a.id));
             }
 
-            // Get annual stats
+            // [OPTIMIZATION] Bulk fetch annual data
+            const allYearAch = await apiService.getAnnualAchievements(year, cluster.id);
             const annualData = {};
-            for (let m = 0; m < 12; m++) {
-                const monthAch = await apiService.getAchievements(m, year, cluster.id);
-                monthAch.forEach(ach => {
-                    if (!annualData[ach.activityId]) annualData[ach.activityId] = [];
-                    annualData[ach.activityId].push(ach.value);
-                });
-            }
+            allYearAch.forEach(ach => {
+                if (!annualData[ach.activityId]) annualData[ach.activityId] = [];
+                // Achievement month index (0-11) matches the array index we want
+                annualData[ach.activityId][ach.month] = ach.value;
+            });
 
-            const pdcaList = [];
-            for (const a of activities) {
-                const p = await apiService.getPDCA(a.id, month, year);
-                if (p) pdcaList.push({ activityName: a.name, ...p });
-            }
+            // [OPTIMIZATION] Bulk fetch PDCA data
+            const allPdca = await apiService.getBulkPDCA(month, year, cluster.id);
+            const pdcaList = allPdca.filter(p =>
+                activities.some(act => act.id === p.activityId)
+            );
 
             setData({ activities, achievements, pdcaList, annualData });
         };
@@ -64,7 +63,8 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
             label: 'Capaian (%)',
             data: data.activities.map(a => {
                 const ach = data.achievements.find(ach => ach.activityId === a.id);
-                return ach ? Math.min((ach.value / a.targetValue) * 100, 100) : 0;
+                const val = ach ? ach.value : 0;
+                return a.targetValue > 0 ? Math.min((val / a.targetValue) * 100, 100) : 0;
             }),
             backgroundColor: 'rgba(13, 148, 136, 0.2)',
             borderColor: '#0d9488',
@@ -97,13 +97,14 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                     {data.activities.map(a => {
                         const ach = data.achievements.find(ach => ach.activityId === a.id);
                         const val = ach ? ach.value : 0;
-                        const pct = ((val / a.targetValue) * 100).toFixed(1);
                         return (
                             <tr key={a.id}>
                                 <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
                                 <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{a.targetValue}</td>
                                 <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{val}</td>
-                                <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>{pct}%</td>
+                                <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
+                                    {a.targetValue > 0 ? ((val / a.targetValue) * 100).toFixed(1) : '0.0'}%
+                                </td>
                             </tr>
                         );
                     })}
@@ -126,15 +127,16 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                         const values = data.annualData[a.id] || [];
                         // Only count up to current month
                         const valuesToCurrent = values.slice(0, month + 1);
-                        const total = valuesToCurrent.reduce((sum, v) => sum + v, 0);
-                        const avgPct = ((total / (a.targetValue * (month + 1))) * 100).toFixed(1);
+                        const total = valuesToCurrent.reduce((sum, v) => sum + (v || 0), 0);
 
                         return (
                             <tr key={a.id}>
                                 <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
                                 <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{a.targetValue * 12}</td>
                                 <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{total}</td>
-                                <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>{avgPct}%</td>
+                                <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
+                                    {(a.targetValue * (month + 1)) > 0 ? ((total / (a.targetValue * (month + 1))) * 100).toFixed(1) : '0.0'}%
+                                </td>
                             </tr>
                         );
                     })}

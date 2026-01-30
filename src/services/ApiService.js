@@ -133,7 +133,54 @@ class ApiService {
         };
     }
 
+    async getAnnualAchievements(year, clusterId) {
+        let query = supabase
+            .from('achievements')
+            .select('*, activities!inner(*)')
+            .eq('year', parseInt(year));
+
+        if (clusterId) {
+            query = query.eq('activities.cluster_id', clusterId);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        return data.map(item => ({
+            activityId: item.activity_id,
+            month: item.month,
+            year: item.year,
+            value: item.value
+        }));
+    }
+
     // PDCA
+    async getBulkPDCA(month, year, clusterId) {
+        let query = supabase
+            .from('pdca')
+            .select('*, activities!inner(*)')
+            .eq('month', parseInt(month))
+            .eq('year', parseInt(year));
+
+        if (clusterId) {
+            query = query.eq('activities.cluster_id', clusterId);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        return data.map(item => ({
+            activityId: item.activity_id,
+            activityName: item.activities.name,
+            month: item.month,
+            year: item.year,
+            plan: item.plan,
+            do: item.do,
+            check: item.check,
+            action: item.action
+        }));
+    }
+
     async getPDCA(activityId, month, year) {
         const { data, error } = await supabase
             .from('pdca')
