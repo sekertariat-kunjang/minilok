@@ -71,6 +71,29 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
         }]
     };
 
+    const lineData = {
+        labels: MONTHS.slice(0, month + 1),
+        datasets: [{
+            label: 'Rerata Capaian (%)',
+            data: MONTHS.slice(0, month + 1).map((_, idx) => {
+                // Calculate average % achievement for each month
+                let totalPercent = 0;
+                let count = 0;
+                data.activities.forEach(a => {
+                    if (a.targetValue > 0) {
+                        const monthlyVal = data.annualData[a.id] ? (data.annualData[a.id][idx] || 0) : 0;
+                        totalPercent += Math.min((monthlyVal / a.targetValue) * 100, 100);
+                        count++;
+                    }
+                });
+                return count > 0 ? (totalPercent / count).toFixed(1) : 0;
+            }),
+            borderColor: '#0d9488',
+            backgroundColor: 'rgba(13, 148, 136, 0.5)',
+            tension: 0.3
+        }]
+    };
+
     return (
         <div id="full-report-content" style={{ padding: '40px', background: 'white', width: '800px', color: '#000' }}>
             {/* Header Image */}
@@ -144,18 +167,20 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
             </table>
 
             {/* Charts Section */}
-            <h3 style={{ borderLeft: '5px solid #0d9488', paddingLeft: '10px', marginBottom: '15px' }}>III. VISUALISASI DATA</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: data.activities.length >= 3 ? '1fr 1fr' : '1fr', gap: '20px', marginBottom: '30px' }}>
+            <h3 id="chart-section-header" style={{ borderLeft: '5px solid #0d9488', paddingLeft: '10px', marginBottom: '15px' }}>III. VISUALISASI DATA</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
                 <div style={{ border: '1px solid #e2e8f0', padding: '10px' }}>
                     <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>Target vs Capaian</p>
                     <Bar data={barData} options={{ maintainAspectRatio: true, responsive: true, plugins: { legend: { display: false } } }} />
                 </div>
-                {data.activities.length >= 3 && (
-                    <div style={{ border: '1px solid #e2e8f0', padding: '10px' }}>
-                        <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>Analisis Laba-laba</p>
-                        <Radar data={radarData} options={{ maintainAspectRatio: true, responsive: true, scales: { r: { min: 0, max: 100, ticks: { display: false } } } }} />
-                    </div>
-                )}
+                <div style={{ border: '1px solid #e2e8f0', padding: '10px' }}>
+                    <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>Analisis Laba-laba</p>
+                    <Radar data={radarData} options={{ maintainAspectRatio: true, responsive: true, scales: { r: { min: 0, max: 100, ticks: { display: false } } } }} />
+                </div>
+                <div style={{ gridColumn: 'span 2', border: '1px solid #e2e8f0', padding: '10px' }}>
+                    <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>Tren Kinerja Bulanan</p>
+                    <Line data={lineData} options={{ maintainAspectRatio: true, responsive: true, scales: { y: { min: 0, max: 120 } } }} />
+                </div>
             </div>
 
             {/* PDCA Section */}

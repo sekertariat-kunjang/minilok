@@ -12,12 +12,15 @@ export const exportToPDF = async (elementId, filename) => {
     });
 
     const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    // A4 width in mm is 210
+    const pdfWidth = 210;
+    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    // Initialize jsPDF with a custom format: single page with exact height needed
+    const pdf = new jsPDF('p', 'mm', [pdfWidth, imgHeight]);
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
     pdf.save(filename);
 };
 
