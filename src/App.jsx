@@ -27,8 +27,8 @@ function App() {
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h1 style={{ fontSize: '1.25rem' }}>e-PKP KUNJANG</h1>
-          <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Puskesmas Kunjang</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', letterSpacing: '1px' }}>PUSAKA</h1>
+          <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.25rem', lineHeight: '1.4' }}>Pusat Data Kinerja Puskesmas Kunjang</p>
         </div>
 
         <nav>
