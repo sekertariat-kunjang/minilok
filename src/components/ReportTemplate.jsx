@@ -161,21 +161,17 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             const valuesToCurrent = values.slice(0, month + 1);
                             const total = valuesToCurrent.reduce((sum, v) => sum + (v || 0), 0);
 
-                            // Robust check for cumulative logic
-                            const targetLogicText = (a.targetLogic || '').toLowerCase();
-                            const isCumulative = targetLogicText === 'cumulative' || targetLogicText === TARGET_LOGIC.CUMULATIVE;
+                            // Simplified logic: Only "cumulative" gets 12x. Everything else (static/default) stays 1x.
+                            const isCumulative = a.targetLogic === 'cumulative';
 
-                            // Annual Target: 12x for cumulative, 1x for static
                             const annualTarget = isCumulative ? a.targetValue * 12 : a.targetValue;
-
-                            // Baseline for current progress %: Cumulative is target * months passed, Static is just current month target
                             const baselineTarget = isCumulative ? a.targetValue * (month + 1) : a.targetValue;
 
-                            // Current month achievement value for comparison
+                            // Current month achievement value
                             const ach = data.achievements.find(ach => ach.activityId === a.id);
                             const currentVal = ach ? ach.value : 0;
 
-                            // Final values for display in Section II (Annual)
+                            // For static programs, we want "Bulanan = Tahunan"
                             const displayTotal = isCumulative ? total : currentVal;
                             const displayBaseline = isCumulative ? baselineTarget : a.targetValue;
 
