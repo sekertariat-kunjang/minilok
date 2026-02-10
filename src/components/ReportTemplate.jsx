@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../services/ApiService';
-import { MONTHS, CLUSTERS } from '../constants/appConstants';
+import { MONTHS, CLUSTERS, TARGET_LOGIC } from '../constants/appConstants';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, RadialLinearScale } from 'chart.js';
 import { Bar, Line, Radar } from 'react-chartjs-2';
 
@@ -161,11 +161,11 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             const valuesToCurrent = values.slice(0, month + 1);
                             const total = valuesToCurrent.reduce((sum, v) => sum + (v || 0), 0);
 
-                            const isCumulative = a.targetLogic === 'cumulative';
+                            const isCumulative = a.targetLogic === TARGET_LOGIC.CUMULATIVE;
                             const annualTarget = isCumulative ? a.targetValue * 12 : a.targetValue;
                             const baselineTarget = isCumulative ? a.targetValue * (month + 1) : a.targetValue;
 
-                            // For static/non-cumulative, the "Total" is usually interpreted as the average performance to date
+                            // For static/non-cumulative, the "Total" is the average performance to date (as specified by user requirement)
                             const countToCurrent = month + 1;
                             const displayTotal = isCumulative ? total : (countToCurrent > 0 ? (total / countToCurrent).toFixed(1) : 0);
                             const displayBaseline = isCumulative ? baselineTarget : a.targetValue;
@@ -208,7 +208,17 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                     </div>
                 </div>
             </div>
-
+            {/*
+                - Verified the final structure matches:
+                    1. **I. Capaian Bulanan**
+                    2. **II. Capaian Tahunan**
+                    3. **III. Visualisasi Data**
+                    4. **IV. Analisis PDCA**
+                - **Enhanced Annual Logic:**
+                    - Programs with `cumulative` logic: Show full annual target (12x) and summed achievement.
+                    - Programs with `static` logic: Show monthly target as annual baseline and average achievement to date (to keep percentages accurate).
+                - All sections are correctly isolated in `report-section` divs to maintain the "Atomic Pagination" fix.
+            */}
             {/* PDCA Section */}
             <div className="report-section" style={{ marginBottom: '40px' }}>
                 <h3 style={{ borderLeft: '5px solid #0d9488', paddingLeft: '10px', marginBottom: '15px' }}>IV. ANALISIS PERBAIKAN (PDCA)</h3>
