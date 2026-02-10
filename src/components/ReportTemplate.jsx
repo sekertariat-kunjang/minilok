@@ -165,9 +165,12 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             const annualTarget = isCumulative ? a.targetValue * 12 : a.targetValue;
                             const baselineTarget = isCumulative ? a.targetValue * (month + 1) : a.targetValue;
 
-                            // For static/non-cumulative, the "Total" is the average performance to date (as specified by user requirement)
-                            const countToCurrent = month + 1;
-                            const displayTotal = isCumulative ? total : (countToCurrent > 0 ? (total / countToCurrent).toFixed(1) : 0);
+                            // Current month achievement value
+                            const ach = data.achievements.find(ach => ach.activityId === a.id);
+                            const currentVal = ach ? ach.value : 0;
+
+                            // For static/non-cumulative, the requirement is "Bulanan = Tahunan"
+                            const displayTotal = isCumulative ? total : currentVal;
                             const displayBaseline = isCumulative ? baselineTarget : a.targetValue;
 
                             return (
