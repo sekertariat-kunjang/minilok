@@ -161,17 +161,21 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             const valuesToCurrent = values.slice(0, month + 1);
                             const total = valuesToCurrent.reduce((sum, v) => sum + (v || 0), 0);
 
+                            const isCumulative = a.targetLogic === 'cumulative';
+                            const annualTarget = isCumulative ? a.targetValue * 12 : a.targetValue;
+                            const baselineTarget = isCumulative ? a.targetValue * (month + 1) : a.targetValue;
+
                             return (
                                 <tr key={a.id}>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{a.targetValue * 12}</td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{annualTarget}</td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{total}</td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
-                                        {(a.targetValue * (month + 1)) > 0 ? ((total / (a.targetValue * (month + 1))) * 100).toFixed(1) : '0.0'}%
+                                        {baselineTarget > 0 ? ((total / baselineTarget) * 100).toFixed(1) : '0.0'}%
                                     </td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontSize: '1.2rem' }}>
-                                        {total > (a.targetValue * (month + 1)) ? <span style={{ color: '#059669' }}>▲</span> :
-                                            total < (a.targetValue * (month + 1)) ? <span style={{ color: '#dc2626' }}>▼</span> :
+                                        {total > baselineTarget ? <span style={{ color: '#059669' }}>▲</span> :
+                                            total < baselineTarget ? <span style={{ color: '#dc2626' }}>▼</span> :
                                                 <span style={{ color: '#64748b' }}>—</span>}
                                     </td>
                                 </tr>
