@@ -106,7 +106,6 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
             </div>
 
             {/* Monthly Summary Table */}
-            {/* Monthly Summary Table */}
             <div className="report-section" style={{ marginBottom: '40px' }}>
                 <h3 style={{ borderLeft: '5px solid #0d9488', paddingLeft: '10px', marginBottom: '15px' }}>I. DATA CAPAIAN KINERJA BULANAN</h3>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -159,7 +158,6 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                     <tbody>
                         {data.activities.map(a => {
                             const values = data.annualData[a.id] || [];
-                            // Only count up to current month
                             const valuesToCurrent = values.slice(0, month + 1);
                             const total = valuesToCurrent.reduce((sum, v) => sum + (v || 0), 0);
 
@@ -199,100 +197,6 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                         <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>Tren Kinerja Bulanan</p>
                         <Line data={lineData} options={{ maintainAspectRatio: true, responsive: true, scales: { y: { min: 0, max: 120 } } }} />
                     </div>
-                </div>
-            </div>
-
-            {/* PDCA Section */}
-            <div className="report-section" style={{ marginBottom: '40px' }}>
-                <h3 style={{ borderLeft: '5px solid #0d9488', paddingLeft: '10px', marginBottom: '15px' }}>IV. ANALISIS PERBAIKAN (PDCA)</h3>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ background: '#f1f5f9' }}>
-                        <tr>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>KEGIATAN</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>TARGET</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>CAPAIAN</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>%</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>TREN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.activities.map(a => {
-                            const ach = data.achievements.find(ach => ach.activityId === a.id);
-                            const val = ach ? ach.value : 0;
-                            return (
-                                <tr key={a.id}>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{a.targetValue}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{val}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
-                                        {a.targetValue > 0 ? ((val / a.targetValue) * 100).toFixed(1) : '0.0'}%
-                                    </td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontSize: '1.2rem' }}>
-                                        {val > a.targetValue ? <span style={{ color: '#059669' }}>▲</span> :
-                                            val < a.targetValue ? <span style={{ color: '#dc2626' }}>▼</span> :
-                                                <span style={{ color: '#64748b' }}>—</span>}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Annual Summary Table */}
-            <div className="report-section" style={{ marginBottom: '40px' }}>
-                <h3 style={{ borderLeft: '5px solid #0d9488', paddingLeft: '10px', marginBottom: '15px' }}>II. DATA CAPAIAN KINERJA TAHUNAN (S/D BULAN INI)</h3>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ background: '#f1f5f9' }}>
-                        <tr>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>KEGIATAN</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>TARGET TAHUNAN</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>TOTAL CAPAIAN</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>RERATA %</th>
-                            <th style={{ border: '1px solid #cbd5e1', padding: '8px' }}>TREN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.activities.map(a => {
-                            const values = data.annualData[a.id] || [];
-                            // Only count up to current month
-                            const valuesToCurrent = values.slice(0, month + 1);
-                            const total = valuesToCurrent.reduce((sum, v) => sum + (v || 0), 0);
-
-                            return (
-                                <tr key={a.id}>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{a.targetValue * 12}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{total}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
-                                        {(a.targetValue * (month + 1)) > 0 ? ((total / (a.targetValue * (month + 1))) * 100).toFixed(1) : '0.0'}%
-                                    </td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontSize: '1.2rem' }}>
-                                        {total > (a.targetValue * (month + 1)) ? <span style={{ color: '#059669' }}>▲</span> :
-                                            total < (a.targetValue * (month + 1)) ? <span style={{ color: '#dc2626' }}>▼</span> :
-                                                <span style={{ color: '#64748b' }}>—</span>}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Charts Section */}
-            <div className="report-section" style={{ marginBottom: '40px' }}>
-                <h3 style={{ borderLeft: '5px solid #0d9488', paddingLeft: '10px', marginBottom: '15px' }}>III. VISUALISASI DATA</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: data.activities.length >= 3 ? '1fr 1fr' : '1fr', gap: '20px' }}>
-                    <div style={{ border: '1px solid #e2e8f0', padding: '10px' }}>
-                        <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>Target vs Capaian</p>
-                        <Bar data={barData} options={{ maintainAspectRatio: true, responsive: true, plugins: { legend: { display: false } } }} />
-                    </div>
-                    {data.activities.length >= 3 && (
-                        <div style={{ border: '1px solid #e2e8f0', padding: '10px' }}>
-                            <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.8rem' }}>Analisis Laba-laba</p>
-                            <Radar data={radarData} options={{ maintainAspectRatio: true, responsive: true, scales: { r: { min: 0, max: 100, ticks: { display: false } } } }} />
-                        </div>
-                    )}
                 </div>
             </div>
 
