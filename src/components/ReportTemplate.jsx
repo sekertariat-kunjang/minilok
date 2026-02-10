@@ -165,17 +165,22 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             const annualTarget = isCumulative ? a.targetValue * 12 : a.targetValue;
                             const baselineTarget = isCumulative ? a.targetValue * (month + 1) : a.targetValue;
 
+                            // For static/non-cumulative, the "Total" is usually interpreted as the average performance to date
+                            const countToCurrent = month + 1;
+                            const displayTotal = isCumulative ? total : (countToCurrent > 0 ? (total / countToCurrent).toFixed(1) : 0);
+                            const displayBaseline = isCumulative ? baselineTarget : a.targetValue;
+
                             return (
                                 <tr key={a.id}>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{annualTarget}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{total}</td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{displayTotal}</td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
-                                        {baselineTarget > 0 ? ((total / baselineTarget) * 100).toFixed(1) : '0.0'}%
+                                        {displayBaseline > 0 ? ((displayTotal / displayBaseline) * 100).toFixed(1) : '0.0'}%
                                     </td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontSize: '1.2rem' }}>
-                                        {total > baselineTarget ? <span style={{ color: '#059669' }}>▲</span> :
-                                            total < baselineTarget ? <span style={{ color: '#dc2626' }}>▼</span> :
+                                        {Number(displayTotal) > displayBaseline ? <span style={{ color: '#059669' }}>▲</span> :
+                                            Number(displayTotal) < displayBaseline ? <span style={{ color: '#dc2626' }}>▼</span> :
                                                 <span style={{ color: '#64748b' }}>—</span>}
                                     </td>
                                 </tr>
