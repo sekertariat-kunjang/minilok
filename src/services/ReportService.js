@@ -2,26 +2,44 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 export const exportToPDF = async (elementId, filename) => {
-    const element = document.getElementById(elementId);
-    if (!element) return;
+    const mainElement = document.getElementById(elementId);
+    if (!mainElement) return;
 
-    const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-    });
+    try {
+        const sections = mainElement.getElementsByClassName('report-section');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const margin = 10; // 10mm margin
+        const contentWidth = pdfWidth - (2 * margin);
 
-    const imgData = canvas.toDataURL('image/png');
+        let currentY = margin;
 
-    // A4 width in mm is 210
-    const pdfWidth = 210;
-    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+        for (let i = 0; i < sections.length; i++) {
+            const canvas = await html2canvas(sections[i], {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+            });
 
-    // Initialize jsPDF with a custom format: single page with exact height needed
-    const pdf = new jsPDF('p', 'mm', [pdfWidth, imgHeight]);
+            const imgData = canvas.toDataURL('image/png');
+            const imgHeightInPdf = (canvas.height * contentWidth) / canvas.width;
 
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
-    pdf.save(filename);
+            // Check if section fits on current page
+            if (currentY + imgHeightInPdf > pdfHeight - margin) {
+                pdf.addPage();
+                currentY = margin;
+            }
+
+            pdf.addImage(imgData, 'PNG', margin, currentY, contentWidth, imgHeightInPdf);
+            currentY += imgHeightInPdf + 10; // Space between sections
+        }
+
+        pdf.save(filename);
+    } catch (error) {
+        console.error('PDF Export Error:', error);
+        alert('Gagal mengekspor PDF: ' + error.message);
+    }
 };
 
 export const exportSlidesToPDF = async (containerClassName, filename) => {

@@ -167,36 +167,60 @@ const PDCA = ({ month, year }) => {
                             </div>
                             <form onSubmit={handleSavePDCA}>
                                 <div className="form-group">
-                                    <label>PLAN (Perencanaan)</label>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <label>PLAN (Perencanaan)</label>
+                                        <span style={{ fontSize: '0.7rem', color: (pdcaData[selectedActivity.id]?.plan?.length || 0) >= 200 ? 'var(--danger)' : 'var(--text-muted)' }}>
+                                            {pdcaData[selectedActivity.id]?.plan?.length || 0}/200
+                                        </span>
+                                    </div>
                                     <textarea
                                         rows="2"
+                                        maxLength="200"
                                         value={pdcaData[selectedActivity.id]?.plan || ''}
                                         onChange={e => updatePdcaField(selectedActivity.id, 'plan', e.target.value)}
                                         placeholder="Analisis penyebab dan rencana perbaikan..."
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label>DO (Pelaksanaan)</label>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <label>DO (Pelaksanaan)</label>
+                                        <span style={{ fontSize: '0.7rem', color: (pdcaData[selectedActivity.id]?.do?.length || 0) >= 200 ? 'var(--danger)' : 'var(--text-muted)' }}>
+                                            {pdcaData[selectedActivity.id]?.do?.length || 0}/200
+                                        </span>
+                                    </div>
                                     <textarea
                                         rows="2"
+                                        maxLength="200"
                                         value={pdcaData[selectedActivity.id]?.do || ''}
                                         onChange={e => updatePdcaField(selectedActivity.id, 'do', e.target.value)}
                                         placeholder="Langkah-langka yang diambil..."
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label>CHECK (Pemeriksaan)</label>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <label>CHECK (Pemeriksaan)</label>
+                                        <span style={{ fontSize: '0.7rem', color: (pdcaData[selectedActivity.id]?.check?.length || 0) >= 200 ? 'var(--danger)' : 'var(--text-muted)' }}>
+                                            {pdcaData[selectedActivity.id]?.check?.length || 0}/200
+                                        </span>
+                                    </div>
                                     <textarea
                                         rows="2"
+                                        maxLength="200"
                                         value={pdcaData[selectedActivity.id]?.check || ''}
                                         onChange={e => updatePdcaField(selectedActivity.id, 'check', e.target.value)}
                                         placeholder="Hasil dari langkah perbaikan..."
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label>ACTION (Tindak Lanjut)</label>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <label>ACTION (Tindak Lanjut)</label>
+                                        <span style={{ fontSize: '0.7rem', color: (pdcaData[selectedActivity.id]?.action?.length || 0) >= 200 ? 'var(--danger)' : 'var(--text-muted)' }}>
+                                            {pdcaData[selectedActivity.id]?.action?.length || 0}/200
+                                        </span>
+                                    </div>
                                     <textarea
                                         rows="2"
+                                        maxLength="200"
                                         value={pdcaData[selectedActivity.id]?.action || ''}
                                         onChange={e => updatePdcaField(selectedActivity.id, 'action', e.target.value)}
                                         placeholder="Standardisasi langkah perbaikan..."

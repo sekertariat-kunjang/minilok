@@ -219,6 +219,7 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                                 <th>Target</th>
                                 <th>Capaian</th>
                                 <th>%</th>
+                                <th>Tren</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -235,16 +236,23 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                                         <td style={{ fontWeight: '600', color: isAchieved ? 'var(--success)' : 'var(--danger)' }}>
                                             {percent}%
                                         </td>
-                                        <td style={{ color: isAchieved ? 'var(--success)' : 'var(--danger)', fontWeight: '500' }}>
-                                            {isAchieved ? (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                    <CheckCircle2 size={16} /> Tercapai
-                                                </span>
-                                            ) : (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                    <AlertCircle size={16} /> Tidak Tercapai
-                                                </span>
-                                            )}
+                                        <td style={{ textAlign: 'center', fontSize: '1.2rem' }}>
+                                            {value > activity.targetValue ? <span style={{ color: 'var(--success)' }}>▲</span> :
+                                                value < activity.targetValue ? <span style={{ color: 'var(--danger)' }}>▼</span> :
+                                                    <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                                        </td>
+                                        <td>
+                                            <span className={`badge ${isAchieved ? 'badge-success' : 'badge-danger'}`}>
+                                                {isAchieved ? (
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                        <CheckCircle2 size={14} /> Tercapai
+                                                    </span>
+                                                ) : (
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                        <AlertCircle size={14} /> Tidak Tercapai
+                                                    </span>
+                                                )}
+                                            </span>
                                         </td>
                                     </tr>
                                 );

@@ -95,19 +95,19 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                                     <div>
                                         <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0d9488' }}>PLAN</div>
-                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.plan}</div>
+                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.plan?.substring(0, 200)}</div>
                                     </div>
                                     <div>
                                         <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0d9488' }}>DO</div>
-                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.do}</div>
+                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.do?.substring(0, 200)}</div>
                                     </div>
                                     <div>
                                         <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0d9488' }}>CHECK</div>
-                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.check}</div>
+                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.check?.substring(0, 200)}</div>
                                     </div>
                                     <div>
                                         <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0d9488' }}>ACTION</div>
-                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.action}</div>
+                                        <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{item.pdca.action?.substring(0, 200)}</div>
                                     </div>
                                 </div>
                             </div>
@@ -115,35 +115,49 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
 
                         {/* Right Column: Visuals */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <div style={{ height: '50%', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '15px' }}>
+                            <div style={{ height: '52%', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '15px' }}>
                                 <p style={{ margin: '0 0 10px 0', textAlign: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>Visualisasi Capaian</p>
-                                <div style={{ height: 'calc(100% - 30px)' }}>
+                                <div style={{ height: 'calc(100% - 35px)', width: '100%' }}>
                                     <Bar
                                         data={{
                                             labels: ['Target', 'Capaian'],
                                             datasets: [{
                                                 data: [item.activity.targetValue, item.achievement.value],
-                                                backgroundColor: ['#cbd5e1', '#0d9488']
+                                                backgroundColor: ['#cbd5e1', '#0d9488'],
+                                                borderRadius: 6
                                             }]
                                         }}
-                                        options={{ maintainAspectRatio: false, plugins: { legend: { display: false } } }}
+                                        options={{
+                                            maintainAspectRatio: false,
+                                            responsive: true,
+                                            plugins: { legend: { display: false } },
+                                            scales: {
+                                                y: { beginAtZero: true }
+                                            }
+                                        }}
                                     />
                                 </div>
                             </div>
-                            <div style={{ height: '50%', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '15px' }}>
+                            <div style={{ height: '45%', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '15px' }}>
                                 <p style={{ margin: '0 0 10px 0', textAlign: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>Posisi Kinerja</p>
-                                <div style={{ height: 'calc(100% - 30px)' }}>
+                                <div style={{ height: 'calc(100% - 35px)', width: '100%' }}>
                                     <Radar
                                         data={{
-                                            labels: ['Bulan 1', 'Bulan 2', 'Bulan 3', 'Bulan 4', 'Bulan 5'],
+                                            labels: ['Bulan 1', 'Bulan 2', 'Bulan 3', 'Bulan 4', MONTHS[month]],
                                             datasets: [{
                                                 label: 'Kinerja',
                                                 data: [80, 85, 90, 75, item.activity.targetValue > 0 ? Math.min((item.achievement.value / item.activity.targetValue) * 100, 100) : 0],
                                                 backgroundColor: 'rgba(13, 148, 136, 0.2)',
-                                                borderColor: '#0d9488'
+                                                borderColor: '#0d9488',
+                                                pointBackgroundColor: '#0d9488',
                                             }]
                                         }}
-                                        options={{ maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } } }}
+                                        options={{
+                                            maintainAspectRatio: false,
+                                            responsive: true,
+                                            scales: { r: { min: 0, max: 100, ticks: { display: false } } },
+                                            plugins: { legend: { display: false } }
+                                        }}
                                     />
                                 </div>
                             </div>
