@@ -14,7 +14,9 @@ class ApiService {
             ...item,
             clusterId: item.cluster_id,
             targetValue: item.target_value,
-            targetLogic: item.target_logic
+            targetLogic: item.target_logic,
+            polarity: item.polarity || 'positive',
+            unit: item.unit || ''
         }));
     }
 
@@ -36,8 +38,10 @@ class ApiService {
                 id: newId,
                 cluster_id: activity.clusterId,
                 name: activity.name,
-                target_value: activity.targetValue,
-                target_logic: activity.targetLogic
+                target_value: activity.targetValue !== undefined ? activity.targetValue : 100,
+                target_logic: activity.targetLogic || 'static',
+                polarity: activity.polarity || 'positive',
+                unit: activity.unit || ''
             }])
             .select()
             .single();
@@ -47,16 +51,20 @@ class ApiService {
             ...data,
             clusterId: data.cluster_id,
             targetValue: data.target_value,
-            targetLogic: data.target_logic
+            targetLogic: data.target_logic,
+            polarity: data.polarity,
+            unit: data.unit
         };
     }
 
     async updateActivity(id, updates) {
         const payload = {};
-        if (updates.name) payload.name = updates.name;
-        if (updates.clusterId) payload.cluster_id = updates.clusterId;
-        if (updates.targetValue) payload.target_value = updates.targetValue;
-        if (updates.targetLogic) payload.target_logic = updates.targetLogic;
+        if (updates.name !== undefined) payload.name = updates.name;
+        if (updates.clusterId !== undefined) payload.cluster_id = updates.clusterId;
+        if (updates.targetValue !== undefined) payload.target_value = updates.targetValue;
+        if (updates.targetLogic !== undefined) payload.target_logic = updates.targetLogic;
+        if (updates.polarity !== undefined) payload.polarity = updates.polarity;
+        if (updates.unit !== undefined) payload.unit = updates.unit;
 
         const { data, error } = await supabase
             .from('activities')
@@ -70,7 +78,9 @@ class ApiService {
             ...data,
             clusterId: data.cluster_id,
             targetValue: data.target_value,
-            targetLogic: data.target_logic
+            targetLogic: data.target_logic,
+            polarity: data.polarity,
+            unit: data.unit
         };
     }
 

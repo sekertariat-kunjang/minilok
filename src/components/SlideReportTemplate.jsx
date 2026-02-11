@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../services/ApiService';
-import { MONTHS } from '../constants/appConstants';
+import { MONTHS, POLARITY } from '../constants/appConstants';
+import { calculatePercent } from '../utils/PerformanceUtils';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Radar } from 'react-chartjs-2';
 
@@ -25,10 +26,16 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                 const ach = achievements.find(ach => ach.activityId === a.id);
                 const pdca = allPdca.find(p => p.activityId === a.id);
 
+                const val = ach ? ach.value : 0;
+                const performance = calculatePercent(a.targetValue, val, a.polarity);
+                const isGood = a.polarity === POLARITY.NEGATIVE ? val <= a.targetValue : val >= a.targetValue;
+
                 return {
                     activity: a,
                     achievement: ach || { value: 0 },
-                    pdca: pdca || { plan: '-', do: '-', check: '-', action: '-' }
+                    pdca: pdca || { plan: '-', do: '-', check: '-', action: '-' },
+                    performance,
+                    isGood
                 };
             });
 
@@ -65,8 +72,8 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             </p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: (item.activity.targetValue > 0 && (item.achievement.value / item.activity.targetValue) >= 1) ? '#059669' : '#dc2626' }}>
-                                {item.activity.targetValue > 0 ? ((item.achievement.value / item.activity.targetValue) * 100).toFixed(1) : '0.0'}%
+                            <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: item.isGood ? '#059669' : '#dc2626' }}>
+                                {item.performance.toFixed(1)}%
                             </div>
                             <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Capaian Kinerja</div>
                         </div>
@@ -81,11 +88,11 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                                     <div>
                                         <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Target</div>
-                                        <div style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>{item.activity.targetValue}</div>
+                                        <div style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>{item.activity.targetValue}{item.activity.unit}</div>
                                     </div>
                                     <div>
                                         <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Realisasi</div>
-                                        <div style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>{item.achievement.value}</div>
+                                        <div style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>{item.achievement.value}{item.activity.unit}</div>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +130,7 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                                             labels: ['Target', 'Capaian'],
                                             datasets: [{
                                                 data: [item.activity.targetValue, item.achievement.value],
-                                                backgroundColor: ['#cbd5e1', '#0d9488'],
+                                                backgroundColor: ['#cbd5e1', item.isGood ? '#0d9488' : '#e11d48'],
                                                 borderRadius: 6
                                             }]
                                         }}
@@ -146,7 +153,7 @@ const SlideReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                                             labels: ['Bulan 1', 'Bulan 2', 'Bulan 3', 'Bulan 4', MONTHS[month]],
                                             datasets: [{
                                                 label: 'Kinerja',
-                                                data: [80, 85, 90, 75, item.activity.targetValue > 0 ? Math.min((item.achievement.value / item.activity.targetValue) * 100, 100) : 0],
+                                                data: [80, 85, 90, 75, item.performance],
                                                 backgroundColor: 'rgba(13, 148, 136, 0.2)',
                                                 borderColor: '#0d9488',
                                                 pointBackgroundColor: '#0d9488',

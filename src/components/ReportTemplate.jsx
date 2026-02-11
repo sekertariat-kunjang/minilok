@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../services/ApiService';
-import { MONTHS, CLUSTERS, TARGET_LOGIC } from '../constants/appConstants';
+import { MONTHS, CLUSTERS, TARGET_LOGIC, POLARITY } from '../constants/appConstants';
+import { calculatePercent } from '../utils/PerformanceUtils';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, RadialLinearScale } from 'chart.js';
 import { Bar, Line, Radar } from 'react-chartjs-2';
 
@@ -52,7 +53,12 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                     const ach = data.achievements.find(ach => ach.activityId === a.id);
                     return ach ? ach.value : 0;
                 }),
-                backgroundColor: '#0d9488'
+                backgroundColor: data.activities.map(a => {
+                    const ach = data.achievements.find(ach => ach.activityId === a.id);
+                    const val = ach ? ach.value : 0;
+                    const isGood = a.polarity === POLARITY.NEGATIVE ? val <= a.targetValue : val >= a.targetValue;
+                    return isGood ? '#0d9488' : '#e11d48'; // Green for good, Red for bad
+                })
             }
         ]
     };
@@ -60,11 +66,11 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
     const radarData = {
         labels: data.activities.map(a => a.name.substring(0, 10)),
         datasets: [{
-            label: 'Capaian (%)',
+            label: 'Kinerja (%)',
             data: data.activities.map(a => {
                 const ach = data.achievements.find(ach => ach.activityId === a.id);
                 const val = ach ? ach.value : 0;
-                return a.targetValue > 0 ? Math.min((val / a.targetValue) * 100, 100) : 0;
+                return calculatePercent(a.targetValue, val, a.polarity);
             }),
             backgroundColor: 'rgba(13, 148, 136, 0.2)',
             borderColor: '#0d9488',
@@ -122,18 +128,24 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                         {data.activities.map(a => {
                             const ach = data.achievements.find(ach => ach.activityId === a.id);
                             const val = ach ? ach.value : 0;
+                            const perf = calculatePercent(a.targetValue, val, a.polarity);
+                            const isGood = a.polarity === POLARITY.NEGATIVE ? val <= a.targetValue : val >= a.targetValue;
+
                             return (
                                 <tr key={a.id}>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{a.targetValue}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{val}</td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>
+                                        {a.targetValue}{a.unit}
+                                    </td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>
+                                        {val}{a.unit}
+                                    </td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
-                                        {a.targetValue > 0 ? ((val / a.targetValue) * 100).toFixed(1) : '0.0'}%
+                                        {perf.toFixed(1)}%
                                     </td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontSize: '1.2rem' }}>
-                                        {val > a.targetValue ? <span style={{ color: '#059669' }}>▲</span> :
-                                            val < a.targetValue ? <span style={{ color: '#dc2626' }}>▼</span> :
-                                                <span style={{ color: '#64748b' }}>—</span>}
+                                        {isGood ? <span style={{ color: '#059669' }}>▲</span> :
+                                            <span style={{ color: '#dc2626' }}>▼</span>}
                                     </td>
                                 </tr>
                             );
@@ -175,18 +187,20 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             const displayTotal = isCumulative ? total : currentVal;
                             const displayBaseline = isCumulative ? baselineTarget : a.targetValue;
 
+                            const isGood = a.polarity === POLARITY.NEGATIVE ? displayTotal <= displayBaseline : displayTotal >= displayBaseline;
+                            const performance = calculatePercent(displayBaseline, displayTotal, a.polarity);
+
                             return (
                                 <tr key={a.id}>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{annualTarget}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{displayTotal}</td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{annualTarget}{a.unit}</td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{displayTotal}{a.unit}</td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
-                                        {displayBaseline > 0 ? ((displayTotal / displayBaseline) * 100).toFixed(1) : '0.0'}%
+                                        {performance.toFixed(1)}%
                                     </td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontSize: '1.2rem' }}>
-                                        {Number(displayTotal) > displayBaseline ? <span style={{ color: '#059669' }}>▲</span> :
-                                            Number(displayTotal) < displayBaseline ? <span style={{ color: '#dc2626' }}>▼</span> :
-                                                <span style={{ color: '#64748b' }}>—</span>}
+                                        {isGood ? <span style={{ color: '#059669' }}>▲</span> :
+                                            <span style={{ color: '#dc2626' }}>▼</span>}
                                     </td>
                                 </tr>
                             );

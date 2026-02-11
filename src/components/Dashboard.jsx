@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CLUSTERS, TARGET_LOGIC } from '../constants/appConstants';
+import { CLUSTERS, TARGET_LOGIC, POLARITY } from '../constants/appConstants';
+import { calculatePercent } from '../utils/PerformanceUtils';
 import apiService from '../services/ApiService';
 import { AlertCircle, CheckCircle2, TrendingUp, Download, ChevronDown, ChevronUp, Monitor, FileText, Presentation } from 'lucide-react';
 import { exportToPDF, exportSlidesToPDF } from '../services/ReportService';
@@ -23,12 +24,11 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
         setAchievements(ach);
     };
 
-    const calculateAchievement = (activityId, targetValue, targetLogic) => {
+    const calculateAchievement = (activityId, targetValue, polarity) => {
         const ach = achievements.find(a => a.activityId === activityId);
         if (!ach) return { percent: 0, value: 0 };
 
-        // Simplification for now: targetValue vs current month value
-        const percent = (ach.value / targetValue) * 100;
+        const percent = calculatePercent(targetValue, ach.value, polarity);
         return { percent: percent.toFixed(1), value: ach.value };
     };
 
@@ -67,13 +67,13 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                 <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
                     <p className="text-muted" style={{ fontSize: '0.875rem' }}>Tercapai</p>
                     <h3 style={{ fontSize: '1.5rem', marginTop: '0.5rem' }}>
-                        {activities.filter(a => calculateAchievement(a.id, a.targetValue, a.targetLogic).percent >= 100).length}
+                        {activities.filter(a => calculateAchievement(a.id, a.targetValue, a.polarity).percent >= 100).length}
                     </h3>
                 </div>
                 <div className="card" style={{ borderLeft: '4px solid var(--danger)' }}>
                     <p className="text-muted" style={{ fontSize: '0.875rem' }}>Belum Tercapai</p>
                     <h3 style={{ fontSize: '1.5rem', marginTop: '0.5rem' }}>
-                        {activities.filter(a => calculateAchievement(a.id, a.targetValue, a.targetLogic).percent < 100).length}
+                        {activities.filter(a => calculateAchievement(a.id, a.targetValue, a.polarity).percent < 100).length}
                     </h3>
                 </div>
             </div>
@@ -225,25 +225,24 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                         </thead>
                         <tbody>
                             {activities.map(activity => {
-                                const { percent, value } = calculateAchievement(activity.id, activity.targetValue, activity.targetLogic);
-                                const isAchieved = percent >= 100;
+                                const { percent, value } = calculateAchievement(activity.id, activity.targetValue, activity.polarity);
+                                const isGood = activity.polarity === POLARITY.NEGATIVE ? value <= activity.targetValue : value >= activity.targetValue;
 
                                 return (
                                     <tr key={activity.id}>
                                         <td style={{ fontWeight: '500' }}>{activity.name}</td>
-                                        <td>{activity.targetValue}</td>
-                                        <td>{value}</td>
-                                        <td style={{ fontWeight: '600', color: isAchieved ? 'var(--success)' : 'var(--danger)' }}>
+                                        <td>{activity.targetValue}{activity.unit}</td>
+                                        <td>{value}{activity.unit}</td>
+                                        <td style={{ fontWeight: '600', color: isGood ? 'var(--success)' : 'var(--danger)' }}>
                                             {percent}%
                                         </td>
                                         <td style={{ textAlign: 'center', fontSize: '1.2rem' }}>
-                                            {value > activity.targetValue ? <span style={{ color: 'var(--success)' }}>▲</span> :
-                                                value < activity.targetValue ? <span style={{ color: 'var(--danger)' }}>▼</span> :
-                                                    <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                                            {isGood ? <span style={{ color: 'var(--success)' }}>▲</span> :
+                                                <span style={{ color: 'var(--danger)' }}>▼</span>}
                                         </td>
                                         <td>
-                                            <span className={`badge ${isAchieved ? 'badge-success' : 'badge-danger'}`}>
-                                                {isAchieved ? (
+                                            <span className={`badge ${isGood ? 'badge-success' : 'badge-danger'}`}>
+                                                {isGood ? (
                                                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                         <CheckCircle2 size={14} /> Tercapai
                                                     </span>

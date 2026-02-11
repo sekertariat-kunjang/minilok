@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CLUSTERS, TARGET_LOGIC, MONTHS } from '../constants/appConstants';
+import { CLUSTERS, TARGET_LOGIC, MONTHS, POLARITY, UNIT } from '../constants/appConstants';
 import apiService from '../services/ApiService';
 import { Plus, Save, Trash2, Edit2 } from 'lucide-react';
 
@@ -7,7 +7,13 @@ const DataEntry = ({ month, year }) => {
     const [activeCluster, setActiveCluster] = useState(CLUSTERS[0]);
     const [activities, setActivities] = useState([]);
     const [achievements, setAchievements] = useState({}); // { activityId: value }
-    const [newActivity, setNewActivity] = useState({ name: '', targetValue: '', targetLogic: TARGET_LOGIC.STATIC });
+    const [newActivity, setNewActivity] = useState({
+        name: '',
+        targetValue: '',
+        targetLogic: TARGET_LOGIC.STATIC,
+        polarity: POLARITY.POSITIVE,
+        unit: UNIT.PERCENT
+    });
     const [editingActivity, setEditingActivity] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
     const [isBulkMode, setIsBulkMode] = useState(false);
@@ -37,10 +43,10 @@ const DataEntry = ({ month, year }) => {
 
         for (const name of names) {
             await apiService.addActivity({
+                ...newActivity,
                 name,
                 clusterId: activeCluster.id,
-                targetValue: parseFloat(newActivity.targetValue),
-                targetLogic: newActivity.targetLogic
+                targetValue: parseFloat(newActivity.targetValue)
             });
         }
 
@@ -52,7 +58,7 @@ const DataEntry = ({ month, year }) => {
 
     const handleAddActivity = async (e) => {
         e.preventDefault();
-        if (!newActivity.name || !newActivity.targetValue) return;
+        if (!newActivity.name || newActivity.targetValue === '') return;
 
         if (editingActivity) {
             await apiService.updateActivity(editingActivity.id, {
@@ -68,7 +74,13 @@ const DataEntry = ({ month, year }) => {
             });
         }
 
-        setNewActivity({ name: '', targetValue: '', targetLogic: TARGET_LOGIC.STATIC });
+        setNewActivity({
+            name: '',
+            targetValue: '',
+            targetLogic: TARGET_LOGIC.STATIC,
+            polarity: POLARITY.POSITIVE,
+            unit: UNIT.PERCENT
+        });
         setShowAddForm(false);
         loadData();
     };
@@ -85,7 +97,9 @@ const DataEntry = ({ month, year }) => {
         setNewActivity({
             name: activity.name,
             targetValue: activity.targetValue,
-            targetLogic: activity.targetLogic
+            targetLogic: activity.targetLogic,
+            polarity: activity.polarity || POLARITY.POSITIVE,
+            unit: activity.unit || UNIT.PERCENT
         });
         setShowAddForm(true);
     };
@@ -289,6 +303,30 @@ const DataEntry = ({ month, year }) => {
                                         <option value={TARGET_LOGIC.CUMULATIVE}>Akumulatif (Linear)</option>
                                     </select>
                                 </div>
+                                <div className="form-group">
+                                    <label>Sifat Indikator</label>
+                                    <select
+                                        value={newActivity.polarity}
+                                        onChange={e => setNewActivity({ ...newActivity, polarity: e.target.value })}
+                                    >
+                                        <option value={POLARITY.POSITIVE}>Makin Tinggi Makin Baik (Positif)</option>
+                                        <option value={POLARITY.NEGATIVE}>Makin Rendah Makin Baik (Invers)</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Satuan</label>
+                                    <select
+                                        value={newActivity.unit}
+                                        onChange={e => setNewActivity({ ...newActivity, unit: e.target.value })}
+                                    >
+                                        <option value={UNIT.PERCENT}>Persen (%)</option>
+                                        <option value={UNIT.PERSON}>Orang</option>
+                                        <option value={UNIT.MINUTE}>Menit</option>
+                                        <option value={UNIT.CASE}>Kasus</option>
+                                        <option value={UNIT.POINT}>Poin</option>
+                                        <option value={UNIT.NONE}>Tanpa Satuan</option>
+                                    </select>
+                                </div>
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                                     <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
                                         {editingActivity ? 'Update' : (isBulkMode ? 'Tambah Semua' : 'Simpan')}
@@ -297,7 +335,13 @@ const DataEntry = ({ month, year }) => {
                                         setShowAddForm(false);
                                         setEditingActivity(null);
                                         setIsBulkMode(false);
-                                        setNewActivity({ name: '', targetValue: '', targetLogic: TARGET_LOGIC.STATIC });
+                                        setNewActivity({
+                                            name: '',
+                                            targetValue: '',
+                                            targetLogic: TARGET_LOGIC.STATIC,
+                                            polarity: POLARITY.POSITIVE,
+                                            unit: UNIT.PERCENT
+                                        });
                                     }}>Batal</button>
                                 </div>
                             </form>
