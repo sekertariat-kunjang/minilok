@@ -243,13 +243,9 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                                         <td>
                                             <span className={`badge ${isGood ? 'badge-success' : 'badge-danger'}`}>
                                                 {isGood ? (
-                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                        <CheckCircle2 size={14} /> Tercapai
-                                                    </span>
+                                                    <><CheckCircle2 size={14} /> Tercapai</>
                                                 ) : (
-                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                        <AlertCircle size={14} /> Tidak Tercapai
-                                                    </span>
+                                                    <><AlertCircle size={14} /> Tidak Tercapai</>
                                                 )}
                                             </span>
                                         </td>

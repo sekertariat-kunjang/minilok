@@ -1,26 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, BarChart3, Settings, PlusCircle, ChevronRight, PieChart } from 'lucide-react';
+import {
+  LayoutDashboard, FileText, BarChart3, Settings, PlusCircle,
+  ChevronRight, ChevronDown, ClipboardCheck, Activity
+} from 'lucide-react';
 import { CLUSTERS, MONTHS } from './constants/appConstants';
 import './index.css';
 
-// Components (To be created)
 import Dashboard from './components/Dashboard';
 import DataEntry from './components/DataEntry';
 import Analysis from './components/Analysis';
 import PDCA from './components/PDCA';
+import SelfAssessment from './components/SelfAssessment';
+
+const MODULE_MINLOK = 'minlok';
+const MODULE_AKREDITASI = 'akreditasi';
 
 function App() {
+  const [activeModule, setActiveModule] = useState(MODULE_MINLOK);
+  const [openAccordion, setOpenAccordion] = useState(MODULE_MINLOK);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedCluster, setSelectedCluster] = useState(CLUSTERS[0]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const tabs = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { id: 'entry', label: 'Input Data', icon: <PlusCircle size={20} /> },
-    { id: 'analysis', label: 'Analisis & Tren', icon: <BarChart3 size={20} /> },
-    { id: 'pdca', label: 'PDCA', icon: <FileText size={20} /> },
+  const minlokTabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+    { id: 'entry', label: 'Input Data', icon: <PlusCircle size={18} /> },
+    { id: 'analysis', label: 'Analisis & Tren', icon: <BarChart3 size={18} /> },
+    { id: 'pdca', label: 'PDCA', icon: <FileText size={18} /> },
   ];
+
+  const toggleAccordion = (mod) => {
+    setOpenAccordion((prev) => (prev === mod ? null : mod));
+  };
+
+  const selectMinlokTab = (tabId) => {
+    setActiveTab(tabId);
+    setActiveModule(MODULE_MINLOK);
+    setOpenAccordion(MODULE_MINLOK);
+  };
+
+  const selectAkreditasi = () => {
+    setActiveModule(MODULE_AKREDITASI);
+    setOpenAccordion(MODULE_AKREDITASI);
+  };
+
+  const headerTitle =
+    activeModule === MODULE_AKREDITASI
+      ? 'Self-Assessment Akreditasi'
+      : minlokTabs.find((t) => t.id === activeTab)?.label ?? '';
+
+  const headerSubtitle =
+    activeModule === MODULE_AKREDITASI
+      ? 'Akreditasi Puskesmas 2023'
+      : 'Sistem Pemantauan Kinerja Bulanan';
 
   return (
     <div className="app-container">
@@ -28,25 +61,73 @@ function App() {
       <aside className="sidebar">
         <div className="sidebar-header">
           <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', letterSpacing: '1px' }}>PUSAKA</h1>
-          <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.25rem', lineHeight: '1.4' }}>Pusat Data Kinerja Puskesmas Kunjang</p>
+          <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.25rem', lineHeight: '1.4' }}>
+            Pusat Data Kinerja Puskesmas Kunjang
+          </p>
         </div>
 
-        <nav>
-          <ul className="nav-list">
-            {tabs.map(tab => (
-              <li
-                key={tab.id}
-                className={`nav-item ${activeTab === tab.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </li>
-            ))}
-          </ul>
+        <nav style={{ flex: 1, overflowY: 'auto' }}>
+          {/* ─── Accordion: Minlok ─── */}
+          <div className="accordion-group">
+            <button
+              className={`accordion-header ${openAccordion === MODULE_MINLOK ? 'open' : ''} ${activeModule === MODULE_MINLOK ? 'module-active' : ''}`}
+              onClick={() => toggleAccordion(MODULE_MINLOK)}
+            >
+              <span className="accordion-header-content">
+                <Activity size={18} />
+                <span>Minlok</span>
+              </span>
+              {openAccordion === MODULE_MINLOK
+                ? <ChevronDown size={16} />
+                : <ChevronRight size={16} />}
+            </button>
+
+            <div className={`accordion-body ${openAccordion === MODULE_MINLOK ? 'open' : ''}`}>
+              <ul className="nav-list">
+                {minlokTabs.map((tab) => (
+                  <li
+                    key={tab.id}
+                    className={`nav-item nav-child ${activeModule === MODULE_MINLOK && activeTab === tab.id ? 'active' : ''}`}
+                    onClick={() => selectMinlokTab(tab.id)}
+                  >
+                    {tab.icon}
+                    <span>{tab.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* ─── Accordion: Akreditasi ─── */}
+          <div className="accordion-group">
+            <button
+              className={`accordion-header ${openAccordion === MODULE_AKREDITASI ? 'open' : ''} ${activeModule === MODULE_AKREDITASI ? 'module-active' : ''}`}
+              onClick={() => toggleAccordion(MODULE_AKREDITASI)}
+            >
+              <span className="accordion-header-content">
+                <ClipboardCheck size={18} />
+                <span>Akreditasi</span>
+              </span>
+              {openAccordion === MODULE_AKREDITASI
+                ? <ChevronDown size={16} />
+                : <ChevronRight size={16} />}
+            </button>
+
+            <div className={`accordion-body ${openAccordion === MODULE_AKREDITASI ? 'open' : ''}`}>
+              <ul className="nav-list">
+                <li
+                  className={`nav-item nav-child ${activeModule === MODULE_AKREDITASI ? 'active' : ''}`}
+                  onClick={selectAkreditasi}
+                >
+                  <ClipboardCheck size={18} />
+                  <span>Self-Assessment</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </nav>
 
-        <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <div style={{ paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           <div className="nav-item">
             <Settings size={20} />
             <span>Pengaturan</span>
@@ -58,58 +139,46 @@ function App() {
       <main className="main-content">
         <header>
           <div className="header-title">
-            <h2>{tabs.find(t => t.id === activeTab).label}</h2>
-            <p>Sistem Pemantauan Kinerja Bulanan</p>
+            <h2>{headerTitle}</h2>
+            <p>{headerSubtitle}</p>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-              style={{ width: 'auto' }}
-            >
-              {MONTHS.map((m, i) => <option key={i} value={i}>{m}</option>)}
-            </select>
-            <select
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-              style={{ width: 'auto' }}
-            >
-              <option value={2025}>2025</option>
-              <option value={2026}>2026</option>
-            </select>
-          </div>
+          {/* Hanya tampilkan filter bulan/tahun untuk modul Minlok */}
+          {activeModule === MODULE_MINLOK && (
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                style={{ width: 'auto' }}
+              >
+                {MONTHS.map((m, i) => <option key={i} value={i}>{m}</option>)}
+              </select>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                style={{ width: 'auto' }}
+              >
+                <option value={2025}>2025</option>
+                <option value={2026}>2026</option>
+              </select>
+            </div>
+          )}
         </header>
 
         {/* Dynamic Content */}
-        {activeTab === 'dashboard' && (
-          <Dashboard
-            month={selectedMonth}
-            year={selectedYear}
-            cluster={selectedCluster}
-            onClusterChange={setSelectedCluster}
-          />
-        )}
+        {activeModule === MODULE_AKREDITASI && <SelfAssessment />}
 
-        {activeTab === 'entry' && (
-          <DataEntry
-            month={selectedMonth}
-            year={selectedYear}
-          />
+        {activeModule === MODULE_MINLOK && activeTab === 'dashboard' && (
+          <Dashboard month={selectedMonth} year={selectedYear} cluster={selectedCluster} onClusterChange={setSelectedCluster} />
         )}
-
-        {activeTab === 'analysis' && (
-          <Analysis
-            month={selectedMonth}
-            year={selectedYear}
-          />
+        {activeModule === MODULE_MINLOK && activeTab === 'entry' && (
+          <DataEntry month={selectedMonth} year={selectedYear} />
         )}
-
-        {activeTab === 'pdca' && (
-          <PDCA
-            month={selectedMonth}
-            year={selectedYear}
-          />
+        {activeModule === MODULE_MINLOK && activeTab === 'analysis' && (
+          <Analysis month={selectedMonth} year={selectedYear} />
+        )}
+        {activeModule === MODULE_MINLOK && activeTab === 'pdca' && (
+          <PDCA month={selectedMonth} year={selectedYear} />
         )}
       </main>
     </div>

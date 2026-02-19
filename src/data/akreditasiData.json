@@ -1,0 +1,502 @@
+[
+  {
+    "id": "bab1",
+    "kode": "KMP",
+    "nama": "Kepemimpinan dan Manajemen Puskesmas",
+    "urutan": 1,
+    "standar": [
+      {
+        "id": "1.1",
+        "nama": "Perencanaan Puskesmas",
+        "kriteria": [
+          {
+            "id": "1.1.1",
+            "nama": "Perencanaan Puskesmas dilakukan secara terpadu",
+            "ep": [
+              { "id": "1.1.1.a", "uraian": "Ditetapkan jenis-jenis pelayanan yang disediakan berdasarkan hasil identifikasi dan analisis kebutuhan masyarakat (R)." },
+              { "id": "1.1.1.b", "uraian": "Dilakukan pembahasan bersama dengan masyarakat/lintas sektor melalui survei, musyawarah/pertemuan dengan tokoh masyarakat, atau mekanisme lain (D, W)." },
+              { "id": "1.1.1.c", "uraian": "Puskesmas menyusun rencana lima tahunan berdasarkan rencana strategis dinas kesehatan daerah kabupaten/kota (D)." },
+              { "id": "1.1.1.d", "uraian": "Puskesmas menyusun Rencana Usulan Kegiatan (RUK) berdasarkan rencana lima tahunan, hasil penilaian kinerja tahun sebelumnya (D, W)." },
+              { "id": "1.1.1.e", "uraian": "Puskesmas menyusun Rencana Pelaksanaan Kegiatan (RPK) tahunan dan RPK bulanan berdasarkan alokasi anggaran yang ditetapkan (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1.2",
+        "nama": "Tata Kelola Organisasi",
+        "kriteria": [
+          {
+            "id": "1.2.1",
+            "nama": "Struktur organisasi ditetapkan dengan kejelasan tugas pokok dan fungsi",
+            "ep": [
+              { "id": "1.2.1.a", "uraian": "Kepala Puskesmas menetapkan Penanggung Jawab (PJ) dan koordinator pelayanan serta uraian tugas yang jelas (R)." },
+              { "id": "1.2.1.b", "uraian": "Kepala Puskesmas menetapkan pedoman/panduan/prosedur profil indikator kinerja Puskesmas (R)." },
+              { "id": "1.2.1.c", "uraian": "Puskesmas menyampaikan informasi tentang jenis dan jadwal pelayanan (D, O, W)." }
+            ]
+          },
+          {
+            "id": "1.2.2",
+            "nama": "Komunikasi dan koordinasi internal dilaksanakan",
+            "ep": [
+              { "id": "1.2.2.a", "uraian": "Kepala Puskesmas menyelenggarakan komunikasi internal yang efektif melalui pertemuan lokakarya mini (D, W)." },
+              { "id": "1.2.2.b", "uraian": "Penyelenggaraan pelayanan dikoordinasikan dengan lintas program dan lintas sektor (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1.3",
+        "nama": "Pengelolaan Sumber Daya Manusia",
+        "kriteria": [
+          {
+            "id": "1.3.1",
+            "nama": "Tenaga kesehatan memiliki kompetensi yang sesuai dengan tugasnya",
+            "ep": [
+              { "id": "1.3.1.a", "uraian": "Kepala Puskesmas menetapkan persyaratan kompetensi untuk setiap jabatan yang ada di Puskesmas (R)." },
+              { "id": "1.3.1.b", "uraian": "Dilaksanakan analisis kebutuhan tenaga sesuai dengan kebutuhan dan persyaratan yang ditetapkan (D, W)." },
+              { "id": "1.3.1.c", "uraian": "Dilakukan upaya untuk memenuhi kebutuhan tenaga baik dari jenis, jumlah, maupun kompetensinya (D, W)." },
+              { "id": "1.3.1.d", "uraian": "Terdapat program pengembangan kompetensi tenaga yang disusun sesuai dengan kebutuhan dan rencana pengembangan (D, W)." },
+              { "id": "1.3.1.e", "uraian": "Dilakukan evaluasi penerapan hasil pelatihan/pendidikan yang telah dilakukan (D, W)." }
+            ]
+          },
+          {
+            "id": "1.3.2",
+            "nama": "Setiap tenaga memiliki dokumen kredensial yang dikelola dengan baik",
+            "ep": [
+              { "id": "1.3.2.a", "uraian": "Kepala Puskesmas menetapkan dokumen tentang pengelolaan dokumen dan rekam implementasi (R)." },
+              { "id": "1.3.2.b", "uraian": "Dokumen kredensial setiap tenaga dikelola secara tertib dan mutakhir (D, O, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1.4",
+        "nama": "Manajemen Keuangan",
+        "kriteria": [
+          {
+            "id": "1.4.1",
+            "nama": "Pengelolaan keuangan dilakukan sesuai dengan ketentuan peraturan perundang-undangan",
+            "ep": [
+              { "id": "1.4.1.a", "uraian": "Kepala Puskesmas menerapkan aturan keuangan sesuai dengan peraturan yang berlaku (R, D, W)." },
+              { "id": "1.4.1.b", "uraian": "Dilakukan perencanaan, pengelolaan, dan pertanggungjawaban keuangan Puskesmas secara transparan dan akuntabel (D, W)." },
+              { "id": "1.4.1.c", "uraian": "Dilakukan audit keuangan secara internal maupun eksternal sesuai peraturan perundangan yang berlaku (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1.5",
+        "nama": "Manajemen Fasilitas dan Keselamatan",
+        "kriteria": [
+          {
+            "id": "1.5.1",
+            "nama": "Program MFK disusun dan dilaksanakan",
+            "ep": [
+              { "id": "1.5.1.a", "uraian": "Terdapat program Manajemen Fasilitas dan Keselamatan (MFK) yang meliputi keselamatan dan keamanan fasilitas (R)." },
+              { "id": "1.5.1.b", "uraian": "Dilakukan identifikasi dan penilaian risiko fasilitas secara berkala (D, O, W)." },
+              { "id": "1.5.1.c", "uraian": "Terdapat program pengelolaan Bahan Berbahaya dan Beracun (B3) dan limbah B3 (R, D, O)." },
+              { "id": "1.5.1.d", "uraian": "Terdapat program penanggulangan bencana dan kebakaran (R, D, O, W)." },
+              { "id": "1.5.1.e", "uraian": "Dilakukan pemeliharaan peralatan medis dan non-medis secara berkala (D, O, W)." },
+              { "id": "1.5.1.f", "uraian": "Dilakukan pemeliharaan sistem utilitas (listrik, air bersih, dan fasilitas sanitasi) (D, O, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1.6",
+        "nama": "Pengelolaan Sistem Informasi Puskesmas",
+        "kriteria": [
+          {
+            "id": "1.6.1",
+            "nama": "Sistem informasi Puskesmas dikelola untuk mendukung pengambilan keputusan",
+            "ep": [
+              { "id": "1.6.1.a", "uraian": "Terdapat sistem informasi Puskesmas yang mendukung pelayanan dan manajemen (R, D)." },
+              { "id": "1.6.1.b", "uraian": "Dilakukan analisis data dan pelaporan sebagai dasar pengambilan keputusan (D, W)." },
+              { "id": "1.6.1.c", "uraian": "Keamanan, kerahasiaan, dan keutuhan data serta informasi Puskesmas dijaga (D, O, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1.7",
+        "nama": "Penyelenggaraan Puskesmas",
+        "kriteria": [
+          {
+            "id": "1.7.1",
+            "nama": "Kepemimpinan dan budaya keselamatan diterapkan",
+            "ep": [
+              { "id": "1.7.1.a", "uraian": "Kepala Puskesmas menetapkan kebijakan pelayanan dan program Puskesmas (R)." },
+              { "id": "1.7.1.b", "uraian": "Kepala Puskesmas memimpin penyelenggaraan pelayanan dan program Puskesmas (D, W)." },
+              { "id": "1.7.1.c", "uraian": "Kepala Puskesmas dan penanggung jawab melakukan evaluasi kinerja secara berkala (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1.8",
+        "nama": "Manajemen Jaringan dan Jejaring",
+        "kriteria": [
+          {
+            "id": "1.8.1",
+            "nama": "Jaringan dan jejaring pelayanan Puskesmas dikelola secara efektif",
+            "ep": [
+              { "id": "1.8.1.a", "uraian": "Kepala Puskesmas menetapkan kebijakan dan prosedur pengelolaan jaringan dan jejaring (R)." },
+              { "id": "1.8.1.b", "uraian": "Dilakukan pembinaan jaringan dan jejaring Puskesmas secara berkala (D, W)." },
+              { "id": "1.8.1.c", "uraian": "Dilakukan evaluasi dan tindak lanjut hasil pembinaan jaringan dan jejaring (D, W)." }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bab2",
+    "kode": "UKM",
+    "nama": "Penyelenggaraan UKM yang Berorientasi pada Upaya Promotif dan Preventif",
+    "urutan": 2,
+    "standar": [
+      {
+        "id": "2.1",
+        "nama": "Perencanaan Pelayanan UKM",
+        "kriteria": [
+          {
+            "id": "2.1.1",
+            "nama": "Kegiatan UKM direncanakan berdasarkan kebutuhan masyarakat",
+            "ep": [
+              { "id": "2.1.1.a", "uraian": "Ditetapkan indikator dan target kinerja UKM berdasarkan kebijakan dari dinas kesehatan dan target kinerja yang disepakati (R)." },
+              { "id": "2.1.1.b", "uraian": "Perencanaan kegiatan UKM dilakukan berdasarkan hasil analisis kebutuhan masyarakat (D, W)." },
+              { "id": "2.1.1.c", "uraian": "Kegiatan UKM direncanakan sesuai dengan target, kebutuhan, dan harapan masyarakat (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2.2",
+        "nama": "Pelaksanaan Kegiatan UKM",
+        "kriteria": [
+          {
+            "id": "2.2.1",
+            "nama": "Pelaksanaan kegiatan UKM berpedoman pada panduan dan prosedur",
+            "ep": [
+              { "id": "2.2.1.a", "uraian": "Kepala Puskesmas menetapkan kebijakan, pedoman, panduan, dan prosedur pelaksanaan kegiatan UKM (R)." },
+              { "id": "2.2.1.b", "uraian": "Pelaksana UKM melaksanakan kegiatan sesuai dengan jadwal dan rencana kegiatan (D, W)." },
+              { "id": "2.2.1.c", "uraian": "Jika ada perubahan jadwal dan rencana kegiatan, dilakukan koordinasi dan komunikasi kepada sasaran dan pihak terkait (D, W)." },
+              { "id": "2.2.1.d", "uraian": "Kegiatan UKM dilaksanakan dengan memperhatikan keselamatan sasaran, pelaksana, dan lingkungan (D, O, W)." }
+            ]
+          },
+          {
+            "id": "2.2.2",
+            "nama": "Pemberdayaan masyarakat dalam UKM dilaksanakan",
+            "ep": [
+              { "id": "2.2.2.a", "uraian": "Dilakukan analisis dan penetapan masalah, penyebab masalah, dan strategi pemberdayaan masyarakat (D, W)." },
+              { "id": "2.2.2.b", "uraian": "Dilaksanakan kegiatan pemberdayaan masyarakat yang bertujuan meningkatkan kesadaran, kemauan, dan kemampuan masyarakat (D, O, W)." },
+              { "id": "2.2.2.c", "uraian": "Dilakukan evaluasi dan tindak lanjut terhadap pelaksanaan pemberdayaan masyarakat (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2.3",
+        "nama": "Penggerakan dan Pelaksanaan UKM",
+        "kriteria": [
+          {
+            "id": "2.3.1",
+            "nama": "Koordinasi dan komunikasi lintas program dan lintas sektor dilaksanakan",
+            "ep": [
+              { "id": "2.3.1.a", "uraian": "Dilakukan upaya komunikasi dan koordinasi dengan tokoh masyarakat, lembaga swadaya masyarakat, dan sektor terkait (D, W)." },
+              { "id": "2.3.1.b", "uraian": "Lintas program dan lintas sektor terlibat dalam perencanaan, pelaksanaan, dan monitoring kegiatan UKM (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2.4",
+        "nama": "Pengawasan, Pengendalian, dan Penilaian Kinerja UKM",
+        "kriteria": [
+          {
+            "id": "2.4.1",
+            "nama": "Pengendalian dan pengawasan dilakukan secara konsisten",
+            "ep": [
+              { "id": "2.4.1.a", "uraian": "Dilakukan pemantauan ketepatan waktu pelaksanaan kegiatan UKM secara berkala (D, W)." },
+              { "id": "2.4.1.b", "uraian": "Dilakukan pemantauan ketepatan sasaran, penggunaan metode, dan penggunaan teknologi dalam pelaksanaan UKM (D, W)." },
+              { "id": "2.4.1.c", "uraian": "Dilakukan pemantauan ketercapaian target kinerja UKM (D, W)." },
+              { "id": "2.4.1.d", "uraian": "Dilakukan evaluasi dan tindak lanjut terhadap hasil pemantauan (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2.5",
+        "nama": "Pelayanan Posyandu",
+        "kriteria": [
+          {
+            "id": "2.5.1",
+            "nama": "Posyandu diselenggarakan secara rutin dan berkualitas",
+            "ep": [
+              { "id": "2.5.1.a", "uraian": "Kepala Puskesmas menetapkan kebijakan tentang penyelenggaraan posyandu (R)." },
+              { "id": "2.5.1.b", "uraian": "Dilakukan pembinaan posyandu secara berkala oleh petugas Puskesmas (D, W)." },
+              { "id": "2.5.1.c", "uraian": "Dilakukan evaluasi dan tindak lanjut terhadap kinerja posyandu (D, W)." }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bab3",
+    "kode": "UKPP",
+    "nama": "Penyelenggaraan UKP, Kefarmasian, dan Laboratorium",
+    "urutan": 3,
+    "standar": [
+      {
+        "id": "3.1",
+        "nama": "Penyelenggaraan Pelayanan Klinis",
+        "kriteria": [
+          {
+            "id": "3.1.1",
+            "nama": "Tersedia pengkajian awal klinis yang paripurna",
+            "ep": [
+              { "id": "3.1.1.a", "uraian": "Kepala Puskesmas menetapkan kebijakan tentang pelayanan klinis (R)." },
+              { "id": "3.1.1.b", "uraian": "Dilakukan pengkajian awal yang meliputi anamnesis, pemeriksaan fisik, dan pemeriksaan penunjang (D, O, W)." },
+              { "id": "3.1.1.c", "uraian": "Pengkajian awal didokumentasikan dalam rekam medis (D, O)." }
+            ]
+          },
+          {
+            "id": "3.1.2",
+            "nama": "Keputusan layanan klinis dilakukan berdasarkan hasil kajian",
+            "ep": [
+              { "id": "3.1.2.a", "uraian": "Dilakukan kajian ulang terhadap kondisi pasien pada hari yang sama jika diputuskan untuk rawat inap (D, O, W)." },
+              { "id": "3.1.2.b", "uraian": "Terdapat prosedur pendelegasian wewenang klinis antar tenaga kesehatan (R, D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3.2",
+        "nama": "Kefarmasian",
+        "kriteria": [
+          {
+            "id": "3.2.1",
+            "nama": "Pelayanan kefarmasian dilaksanakan sesuai ketentuan",
+            "ep": [
+              { "id": "3.2.1.a", "uraian": "Ditetapkan Formularium Puskesmas sesuai dengan aturan yang berlaku (R, D)." },
+              { "id": "3.2.1.b", "uraian": "Dilakukan pengelolaan obat dan bahan habis pakai secara tertib (D, O, W)." },
+              { "id": "3.2.1.c", "uraian": "Dilakukan penilaian resep dan pemberian obat secara tepat dan aman (D, O, W)." },
+              { "id": "3.2.1.d", "uraian": "Dilakukan pemantauan efek samping obat (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3.3",
+        "nama": "Pelayanan Laboratorium",
+        "kriteria": [
+          {
+            "id": "3.3.1",
+            "nama": "Pemeriksaan laboratorium dilaksanakan sesuai ketentuan",
+            "ep": [
+              { "id": "3.3.1.a", "uraian": "Kepala Puskesmas menetapkan jenis-jenis pemeriksaan laboratorium yang tersedia (R)." },
+              { "id": "3.3.1.b", "uraian": "Dilakukan pemantapan mutu internal dan eksternal laboratorium (D, W)." },
+              { "id": "3.3.1.c", "uraian": "Hasil pemeriksaan laboratorium dilaporkan tepat waktu dan didokumentasikan (D, O, W)." },
+              { "id": "3.3.1.d", "uraian": "Reagansia, bahan habis pakai, dan peralatan laboratorium dikelola secara tertib (D, O)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3.4",
+        "nama": "Keselamatan Pasien",
+        "kriteria": [
+          {
+            "id": "3.4.1",
+            "nama": "Keselamatan pasien diterapkan di Puskesmas",
+            "ep": [
+              { "id": "3.4.1.a", "uraian": "Kepala Puskesmas menetapkan kebijakan keselamatan pasien (R)." },
+              { "id": "3.4.1.b", "uraian": "Dilakukan identifikasi pasien sebelum dilakukan tindakan (D, O, W)." },
+              { "id": "3.4.1.c", "uraian": "Dilakukan komunikasi efektif antar petugas dalam serah terima pasien (D, O, W)." },
+              { "id": "3.4.1.d", "uraian": "Dilakukan pengelolaan obat high alert dan LASA (D, O)." },
+              { "id": "3.4.1.e", "uraian": "Dilakukan pencegahan risiko jatuh pada pasien (D, O, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3.5",
+        "nama": "Penanganan Kejadian Tidak Diharapkan",
+        "kriteria": [
+          {
+            "id": "3.5.1",
+            "nama": "Insiden keselamatan pasien diidentifikasi dan ditindaklanjuti",
+            "ep": [
+              { "id": "3.5.1.a", "uraian": "Terdapat sistem pelaporan insiden keselamatan pasien (R, D)." },
+              { "id": "3.5.1.b", "uraian": "Dilakukan analisis akar masalah (Root Cause Analysis) terhadap setiap insiden yang terjadi (D, W)." },
+              { "id": "3.5.1.c", "uraian": "Dilakukan tindak lanjut dan evaluasi terhadap setiap insiden keselamatan pasien (D, W)." }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bab4",
+    "kode": "PPN",
+    "nama": "Program Prioritas Nasional",
+    "urutan": 4,
+    "standar": [
+      {
+        "id": "4.1",
+        "nama": "Penurunan Stunting dan Wasting",
+        "kriteria": [
+          {
+            "id": "4.1.1",
+            "nama": "Penurunan prevalensi stunting dan wasting dilaksanakan sesuai pedoman",
+            "ep": [
+              { "id": "4.1.1.a", "uraian": "Ditetapkan indikator dan target program pencegahan stunting dan wasting, yang dijabarkan dalam rencana kegiatan (R, D, W)." },
+              { "id": "4.1.1.b", "uraian": "Ditetapkan program pencegahan stunting yang mencakup intervensi spesifik dan sensitif (R, D)." },
+              { "id": "4.1.1.c", "uraian": "Ditetapkan tim penanganan dan pelaksanaan kegiatan penurunan stunting yang dituangkan dalam keputusan kepala Puskesmas (R, D, W)." },
+              { "id": "4.1.1.d", "uraian": "Dilaksanakan program pencegahan stunting sesuai dengan perencanaan yang telah ditetapkan (D, O, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4.2",
+        "nama": "Pelayanan Kesehatan Ibu dan Bayi Baru Lahir",
+        "kriteria": [
+          {
+            "id": "4.2.1",
+            "nama": "Pelayanan kesehatan ibu sesuai standar",
+            "ep": [
+              { "id": "4.2.1.a", "uraian": "Ditetapkan indikator dan target pelayanan kesehatan ibu hamil (R, D, W)." },
+              { "id": "4.2.1.b", "uraian": "Dilakukan pemeriksaan antenatal care (ANC) sesuai standar (D, O, W)." },
+              { "id": "4.2.1.c", "uraian": "Dilaksanakan program inovasi percepatan penurunan angka kematian ibu (D, O, W)." },
+              { "id": "4.2.1.d", "uraian": "Dilakukan pemantauan pelayanan persalinan dan nifas sesuai standar (D, O, W)." },
+              { "id": "4.2.1.e", "uraian": "Dilaksanakan tata laksana kasus komplikasi obstetri dan neonatal secara tepat (D, O, W)." },
+              { "id": "4.2.1.f", "uraian": "Dilakukan pemantauan, analisis, dan tindak lanjut terhadap indikator kesehatan ibu (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4.3",
+        "nama": "Keluarga Berencana",
+        "kriteria": [
+          {
+            "id": "4.3.1",
+            "nama": "Pelayanan KB dilaksanakan sesuai ketentuan",
+            "ep": [
+              { "id": "4.3.1.a", "uraian": "Ditetapkan indikator dan target program KB yang dicapai dan dianalisis setiap tahun (R, D, W)." },
+              { "id": "4.3.1.b", "uraian": "Dilaksanakan pelayanan KB sesuai standar termasuk penanganan efek samping dan komplikasi (D, O, W)." },
+              { "id": "4.3.1.c", "uraian": "Dilakukan evaluasi dan tindak lanjut terhadap pencapaian indikator program KB (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4.4",
+        "nama": "Pencegahan dan Pengendalian Tuberkulosis",
+        "kriteria": [
+          {
+            "id": "4.4.1",
+            "nama": "Pengendalian TBC dilaksanakan sesuai kebijakan pemerintah",
+            "ep": [
+              { "id": "4.4.1.a", "uraian": "Ditetapkan indikator dan target kinerja penanggulangan tuberkulosis yang disertai capaian dan analisa (R, D, W)." },
+              { "id": "4.4.1.b", "uraian": "Ditetapkan tim TB DOTS di Puskesmas yang aktif dan bertugas atas pelaksanaan dan evaluasi pencapaian program tuberkulosis (R)." },
+              { "id": "4.4.1.c", "uraian": "Tersedia logistik, baik OAT maupun non-OAT, sesuai dengan kebutuhan program serta dilakukan pencatatan secara berkala (D, O)." },
+              { "id": "4.4.1.d", "uraian": "Dilakukan tata laksana kasus tuberkulosis meliputi diagnosis, pengobatan, pemantauan, evaluasi, dan pelaporan (D, O, W)." },
+              { "id": "4.4.1.e", "uraian": "Dilakukan pemantauan, evaluasi, dan tindak lanjut terhadap pencapaian indikator program TBC (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4.5",
+        "nama": "Pencegahan dan Pengendalian Penyakit Tidak Menular (PTM)",
+        "kriteria": [
+          {
+            "id": "4.5.1",
+            "nama": "Pelayanan PTM dilaksanakan sesuai standar",
+            "ep": [
+              { "id": "4.5.1.a", "uraian": "Ditetapkan indikator dan target pencapaian pelayanan PTM yang disertai capaian dan dievaluasi secara berkala (R, D, W)." },
+              { "id": "4.5.1.b", "uraian": "Dilakukan program PTM yang mencakup promotif, preventif, kuratif, dan rehabilitatif sesuai standar (D, O, W)." },
+              { "id": "4.5.1.c", "uraian": "Dilaksanakan implementasi program Penyakit Tidak Menular (PTM) berupa kegiatan skrining dan pengendalian faktor risiko (D, O, W)." },
+              { "id": "4.5.1.d", "uraian": "Dilakukan pemantauan, evaluasi, dan tindak lanjut terhadap pencapaian indikator program PTM (D, W)." }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bab5",
+    "kode": "PMP",
+    "nama": "Peningkatan Mutu Puskesmas",
+    "urutan": 5,
+    "standar": [
+      {
+        "id": "5.1",
+        "nama": "Perencanaan, Monitoring, dan Evaluasi Mutu",
+        "kriteria": [
+          {
+            "id": "5.1.1",
+            "nama": "Program peningkatan mutu disusun dan diimplementasikan",
+            "ep": [
+              { "id": "5.1.1.a", "uraian": "Terdapat Tim Mutu Puskesmas yang ditetapkan oleh kepala Puskesmas dengan uraian tugas yang jelas (R)." },
+              { "id": "5.1.1.b", "uraian": "Terdapat program peningkatan mutu yang memuat kegiatan peningkatan mutu dan keselamatan pasien (R, D)." },
+              { "id": "5.1.1.c", "uraian": "Terdapat mekanisme untuk mendapatkan umpan balik dari pasien/keluarga tentang mutu pelayanan (D, O, W)." },
+              { "id": "5.1.1.d", "uraian": "Dilakukan monitoring dan evaluasi pelaksanaan program mutu secara berkala (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "5.2",
+        "nama": "Indikator Mutu Puskesmas",
+        "kriteria": [
+          {
+            "id": "5.2.1",
+            "nama": "Indikator mutu ditetapkan dan digunakan untuk perbaikan",
+            "ep": [
+              { "id": "5.2.1.a", "uraian": "Ditetapkan indikator mutu Puskesmas yang menjadi prioritas perbaikan meliputi indikator mutu nasional dan indikator mutu prioritas (R)." },
+              { "id": "5.2.1.b", "uraian": "Dilakukan pengumpulan data indikator mutu secara periodik (D, W)." },
+              { "id": "5.2.1.c", "uraian": "Dilakukan analisis terhadap data indikator mutu yang terkumpul (D, W)." },
+              { "id": "5.2.1.d", "uraian": "Dilakukan tindak lanjut terhadap hasil analisis indikator mutu (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "5.3",
+        "nama": "Sasaran Keselamatan Pasien",
+        "kriteria": [
+          {
+            "id": "5.3.1",
+            "nama": "Sasaran keselamatan pasien dilaksanakan",
+            "ep": [
+              { "id": "5.3.1.a", "uraian": "Terdapat program keselamatan pasien yang memuat sasaran keselamatan pasien sesuai standar akreditasi (R, D)." },
+              { "id": "5.3.1.b", "uraian": "Dilakukan tata kelola insiden keselamatan pasien termasuk pelaporan, analisis, dan tindak lanjut (D, W)." },
+              { "id": "5.3.1.c", "uraian": "Dilakukan evaluasi budaya keselamatan di Puskesmas (D, W)." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "5.4",
+        "nama": "Manajemen Risiko",
+        "kriteria": [
+          {
+            "id": "5.4.1",
+            "nama": "Manajemen risiko dilaksanakan secara sistematis",
+            "ep": [
+              { "id": "5.4.1.a", "uraian": "Terdapat program manajemen risiko yang disusun berdasarkan identifikasi dan analisis risiko (R, D)." },
+              { "id": "5.4.1.b", "uraian": "Dilakukan identifikasi, analisis, dan evaluasi risiko secara berkala di setiap unit pelayanan (D, O, W)." },
+              { "id": "5.4.1.c", "uraian": "Dilakukan tindak lanjut terhadap risiko yang teridentifikasi (D, W)." },
+              { "id": "5.4.1.d", "uraian": "Dilakukan monitoring dan evaluasi terhadap pelaksanaan program manajemen risiko (D, W)." }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
