@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import apiService from '../services/ApiService';
-import { MONTHS, POLARITY } from '../constants/appConstants';
-import { calculatePercent } from '../utils/PerformanceUtils';
+import apiService from '../../minlok/services/ApiService';
+import { MONTHS, POLARITY } from '../../../core/constants/globalConstants';
+import { calculatePercent } from '../../../core/utils/PerformanceUtils';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Radar } from 'react-chartjs-2';
 

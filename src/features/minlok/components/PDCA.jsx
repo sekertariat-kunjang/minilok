@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CLUSTERS, MONTHS } from '../constants/appConstants';
+import { CLUSTERS } from '../constants/minlokConstants';
+import { MONTHS } from '../../../core/constants/globalConstants';
 import apiService from '../services/ApiService';
 import { AlertCircle, Save } from 'lucide-react';
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { LayoutDashboard, ClipboardList, Loader, AlertCircle } from 'lucide-react';
 import akreditasiService from '../../services/akreditasiService';
-import { exportToPDF } from '../../services/ReportService';
+import { exportToPDF } from '../../../reporting/services/ReportService';
 import SAPeriodeManager from './SAPeriodeManager';
 import SADashboard from './SADashboard';
 import SADataEntry from './SADataEntry';

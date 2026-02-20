@@ -1,7 +1,7 @@
 import React from 'react';
 import babData from '../../data/akreditasiData.json';
 import { hitungCapaian, hitungLevelAkreditasi, LEVEL_COLOR } from '../../constants/akreditasiConstants';
-import headerImg from '../../assets/header.png';
+import headerImg from '../../../../assets/header.png';
 
 const SAReportTemplate = ({ periode, skorData }) => {
     if (!periode) return null;

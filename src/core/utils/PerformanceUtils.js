@@ -1,4 +1,4 @@
-import { POLARITY } from '../constants/appConstants';
+import { POLARITY } from '../constants/globalConstants';
 
 /**
  * Calculates the percentage of achievement based on target, value, and polarity.

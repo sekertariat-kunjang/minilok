@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CLUSTERS, TARGET_LOGIC, MONTHS, POLARITY, UNIT } from '../constants/appConstants';
+import { CLUSTERS } from '../constants/minlokConstants';
+import { TARGET_LOGIC, MONTHS, POLARITY, UNIT } from '../../../core/constants/globalConstants';
 import apiService from '../services/ApiService';
 import { Plus, Save, Trash2, Edit2 } from 'lucide-react';
 

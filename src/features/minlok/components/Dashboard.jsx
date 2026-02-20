@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { CLUSTERS, TARGET_LOGIC, POLARITY } from '../constants/appConstants';
-import { calculatePercent } from '../utils/PerformanceUtils';
+import { CLUSTERS } from '../constants/minlokConstants';
+import { TARGET_LOGIC, POLARITY } from '../../../core/constants/globalConstants';
+import { calculatePercent } from '../../../core/utils/PerformanceUtils';
 import apiService from '../services/ApiService';
 import { AlertCircle, CheckCircle2, TrendingUp, Download, ChevronDown, ChevronUp, Monitor, FileText, Presentation } from 'lucide-react';
-import { exportToPDF, exportSlidesToPDF } from '../services/ReportService';
-import ReportTemplate from './ReportTemplate';
-import SlideReportTemplate from './SlideReportTemplate';
+import { exportToPDF, exportSlidesToPDF } from '../../reporting/services/ReportService';
+import ReportTemplate from '../../reporting/components/ReportTemplate';
+import SlideReportTemplate from '../../reporting/components/SlideReportTemplate';
 
 const Dashboard = ({ month, year, cluster, onClusterChange }) => {
     const [activities, setActivities] = useState([]);

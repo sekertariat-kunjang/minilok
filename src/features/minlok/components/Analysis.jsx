@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, RadialLinearScale } from 'chart.js';
 import { Bar, Line, Radar } from 'react-chartjs-2';
 import apiService from '../services/ApiService';
-import { CLUSTERS, MONTHS } from '../constants/appConstants';
+import { CLUSTERS } from '../constants/minlokConstants';
+import { MONTHS } from '../../../core/constants/globalConstants';
 
 ChartJS.register(CategoryScale, LinearScale, RadialLinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
