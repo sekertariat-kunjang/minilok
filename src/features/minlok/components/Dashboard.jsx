@@ -3,19 +3,23 @@ import { CLUSTERS } from '../constants/minlokConstants';
 import { TARGET_LOGIC, POLARITY } from '../../../core/constants/globalConstants';
 import { calculatePercent } from '../../../core/utils/PerformanceUtils';
 import apiService from '../services/ApiService';
-import { AlertCircle, CheckCircle2, TrendingUp, Download, ChevronDown, ChevronUp, Monitor, FileText, Presentation } from 'lucide-react';
+import { AlertCircle, CheckCircle2, TrendingUp, Download, ChevronDown, ChevronUp, Monitor, FileText, Presentation, ChevronLeft, ChevronRight } from 'lucide-react';
 import { exportToPDF, exportSlidesToPDF } from '../../reporting/services/ReportService';
 import ReportTemplate from '../../reporting/components/ReportTemplate';
 import SlideReportTemplate from '../../reporting/components/SlideReportTemplate';
+
+const ITEMS_PER_PAGE = 10;
 
 const Dashboard = ({ month, year, cluster, onClusterChange }) => {
     const [activities, setActivities] = useState([]);
     const [achievements, setAchievements] = useState([]);
     const [selectedActivityIds, setSelectedActivityIds] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         loadData();
         setSelectedActivityIds([]); // Reset filter when cluster changes
+        setCurrentPage(1); // Reset pagination when cluster/period changes
     }, [cluster, month, year]);
 
     const loadData = async () => {
@@ -225,15 +229,15 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {activities.map(activity => {
+                            {activities.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map(activity => {
                                 const { percent, value } = calculateAchievement(activity.id, activity.targetValue, activity.polarity);
                                 const isGood = activity.polarity === POLARITY.NEGATIVE ? value <= activity.targetValue : value >= activity.targetValue;
 
                                 return (
                                     <tr key={activity.id}>
                                         <td style={{ fontWeight: '500' }}>{activity.name}</td>
-                                        <td>{activity.targetValue}{activity.unit}</td>
-                                        <td>{value}{activity.unit}</td>
+                                        <td>{activity.targetValue}</td>
+                                        <td>{value}</td>
                                         <td style={{ fontWeight: '600', color: isGood ? 'var(--success)' : 'var(--danger)' }}>
                                             {percent}%
                                         </td>
@@ -262,6 +266,28 @@ const Dashboard = ({ month, year, cluster, onClusterChange }) => {
                             )}
                         </tbody>
                     </table>
+
+                    {activities.length > ITEMS_PER_PAGE && (
+                        <div className="sa-pagination">
+                            <button
+                                className="sa-page-btn"
+                                disabled={currentPage === 1}
+                                onClick={() => setCurrentPage(prev => prev - 1)}
+                            >
+                                <ChevronLeft size={16} />
+                            </button>
+                            <span className="sa-page-info">
+                                Halaman {currentPage} dari {Math.ceil(activities.length / ITEMS_PER_PAGE)}
+                            </span>
+                            <button
+                                className="sa-page-btn"
+                                disabled={currentPage === Math.ceil(activities.length / ITEMS_PER_PAGE)}
+                                onClick={() => setCurrentPage(prev => prev + 1)}
+                            >
+                                <ChevronRight size={16} />
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 

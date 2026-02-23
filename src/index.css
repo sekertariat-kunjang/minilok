@@ -1534,13 +1534,24 @@ textarea:focus {
    PUBLIC FORMS (FINANCE)
    ═══════════════════════════════════════════════ */
 .public-form-container {
-  max-width: 600px;
-  margin: 4rem auto;
-  padding: 2.5rem;
+  max-width: 800px;
+  width: 95%;
+  margin: 2rem auto;
+  padding: 3rem;
   background: white;
-  border-radius: 1.25rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-lg);
   border: 1px solid var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .public-form-container {
+    padding: 1.5rem;
+    margin: 1rem auto;
+    border-radius: 1rem;
+    width: 98%;
+  }
 }
 
 .public-form-container.success,
@@ -1553,19 +1564,27 @@ textarea:focus {
 }
 
 .public-header {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   border-bottom: 2px solid var(--bg-main);
-  padding-bottom: 1.5rem;
+  padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+  text-align: center;
 }
 
 .public-header h1 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--secondary);
   margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+@media (max-width: 768px) {
+  .public-header h1 {
+    font-size: 1.5rem;
+  }
 }
 
 .identity-banner {
@@ -1619,10 +1638,18 @@ textarea:focus {
   display: inline-block;
   background: var(--primary-light);
   color: var(--primary);
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.5rem;
-  font-size: 0.85rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
   font-weight: 700;
+  box-shadow: 0 2px 4px rgba(13, 148, 136, 0.1);
+}
+
+@media (max-width: 768px) {
+  .activity-badge {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
 }
 
 .rejection-box {
@@ -1723,12 +1750,15 @@ textarea:focus {
 
 .report-content-box {
   background: #f8fafc;
-  padding: 1.25rem;
-  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
   border: 1px solid var(--border);
-  margin: 1rem 0;
+  margin: 1.5rem 0;
   white-space: pre-wrap;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-group-row {
@@ -1749,6 +1779,15 @@ textarea:focus {
 
 .form-actions button {
   flex: 1;
+}
+
+@media (max-width: 480px) {
+
+  .btn-group-row,
+  .form-actions,
+  .success-actions {
+    flex-direction: column;
+  }
 }
 
 .success-actions {

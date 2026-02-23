@@ -95,21 +95,21 @@ const PublicEvaluationForm = ({ token }) => {
                     />
                 </div>
 
-                <div className="btn-group-row">
+                <div className="btn-group-row evaluation-btn-group">
                     <button
                         onClick={() => handleAction(false)}
-                        className="btn btn-outline btn-danger"
+                        className="btn btn-outline btn-danger btn-large"
                         disabled={submitting}
                     >
-                        <XCircle size={18} />
-                        Tolak / Butuh Perbaikan
+                        <XCircle size={20} />
+                        Tolak Laporan
                     </button>
                     <button
                         onClick={() => handleAction(true)}
-                        className="btn btn-primary"
+                        className="btn btn-primary btn-large"
                         disabled={submitting}
                     >
-                        <CheckCircle2 size={18} />
+                        <CheckCircle2 size={20} />
                         ACC Laporan
                     </button>
                 </div>

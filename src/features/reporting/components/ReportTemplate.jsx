@@ -136,10 +136,10 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                                 <tr key={a.id}>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>
-                                        {a.targetValue}{a.unit}
+                                        {a.targetValue}
                                     </td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>
-                                        {val}{a.unit}
+                                        {val}
                                     </td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
                                         {perf.toFixed(1)}%
@@ -194,8 +194,8 @@ const ReportTemplate = ({ cluster, month, year, filterActivityIds }) => {
                             return (
                                 <tr key={a.id}>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px' }}>{a.name}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{annualTarget}{a.unit}</td>
-                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{displayTotal}{a.unit}</td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{annualTarget}</td>
+                                    <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center' }}>{displayTotal}</td>
                                     <td style={{ border: '1px solid #cbd5e1', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>
                                         {performance.toFixed(1)}%
                                     </td>

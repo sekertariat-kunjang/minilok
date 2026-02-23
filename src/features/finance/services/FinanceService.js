@@ -39,6 +39,23 @@ class FinanceService {
         return data;
     }
 
+    async createBulkActivities(activities) {
+        const rows = activities.map(act => ({
+            title: act.title,
+            budget: act.budget || 0,
+            description: act.description || '',
+            status: FINANCE_STATUS.DRAFT
+        }));
+
+        const { data, error } = await supabase
+            .from('finance_activities')
+            .insert(rows)
+            .select();
+
+        if (error) throw error;
+        return data;
+    }
+
     async updateActivity(id, updates) {
         // Sanitize updates data: convert empty strings to null for database compatibility
         const sanitizedUpdates = {};
@@ -148,6 +165,21 @@ class FinanceService {
             .insert([{ name, role }])
             .select()
             .single();
+
+        if (error) throw error;
+        return data;
+    }
+
+    async addBulkPersonnel(personnel) {
+        const rows = personnel.map(p => ({
+            name: p.name,
+            role: p.role
+        }));
+
+        const { data, error } = await supabase
+            .from('finance_personnel')
+            .insert(rows)
+            .select();
 
         if (error) throw error;
         return data;

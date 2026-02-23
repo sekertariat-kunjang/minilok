@@ -112,13 +112,13 @@ const PublicReportForm = ({ token }) => {
         <div className="public-form-container">
             <header className="public-header no-print">
                 <h1>Laporan Hasil Kegiatan</h1>
+                <div className="activity-badge">{activity.title}</div>
                 <div className="identity-banner">
                     <div className="id-item">
                         <span className="label">Petugas:</span>
                         <span className="value">{activity.petugas_name}</span>
                     </div>
                 </div>
-                <div className="activity-badge">{activity.title}</div>
             </header>
 
             <div className="activity-description-box no-print">
@@ -187,11 +187,11 @@ const PublicReportForm = ({ token }) => {
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="btn btn-primary" disabled={submitting}>
-                        {submitting ? <Loader2 className="spin" size={18} /> : 'Kirim Laporan'}
+                    <button type="submit" className="btn btn-primary btn-large" disabled={submitting}>
+                        {submitting ? <Loader2 className="spin" size={20} /> : 'Kirim Laporan'}
                     </button>
                     {reportText && (
-                        <button type="button" className="btn btn-outline" onClick={handlePrint}>
+                        <button type="button" className="btn btn-outline btn-large" onClick={handlePrint}>
                             Preview PDF
                         </button>
                     )}
