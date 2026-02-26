@@ -4,6 +4,7 @@ import { Bar, Line, Radar } from 'react-chartjs-2';
 import apiService from '../services/ApiService';
 import { CLUSTERS } from '../constants/minlokConstants';
 import { MONTHS } from '../../../core/constants/globalConstants';
+import { deduplicateByProperty } from '../../../core/utils/DataUtils';
 
 ChartJS.register(CategoryScale, LinearScale, RadialLinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -11,8 +12,11 @@ const Analysis = ({ month, year }) => {
     const [activeCluster, setActiveCluster] = useState(CLUSTERS[0]);
     const [activities, setActivities] = useState([]);
     const [achievements, setAchievements] = useState([]);
+    const [annualAchievements, setAnnualAchievements] = useState([]); // F-03
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [loading, setLoading] = useState(true); // F-05
+    const [error, setError] = useState(null); // F-04
 
     useEffect(() => {
         loadData();
@@ -20,19 +24,30 @@ const Analysis = ({ month, year }) => {
     }, [activeCluster, month, year]);
 
     const loadData = async () => {
-        const act = await apiService.getActivities(activeCluster.id);
-        const ach = await apiService.getAchievements(month, year, activeCluster.id);
-        setActivities(act);
-        setAchievements(ach);
+        try {
+            setLoading(true);
+            setError(null);
+
+            // F-03: Fetch annual achievements for trend
+            const [act, ach, annual] = await Promise.all([
+                apiService.getActivities(activeCluster.id),
+                apiService.getAchievements(month, year, activeCluster.id),
+                apiService.getAnnualAchievements(year, activeCluster.id)
+            ]);
+
+            setActivities(act);
+            setAchievements(ach);
+            setAnnualAchievements(annual);
+        } catch (err) {
+            console.error("Analysis Load Error:", err);
+            setError("Gagal memuat data analisis. Silakan coba lagi.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const paginatedActivities = React.useMemo(() => {
-        const unique = activities.reduce((acc, current) => {
-            if (!acc.find(item => item.id === current.id)) {
-                return acc.concat([current]);
-            }
-            return acc;
-        }, []);
+        const unique = deduplicateByProperty(activities);
         return unique.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     }, [activities, currentPage, itemsPerPage]);
 
@@ -55,18 +70,29 @@ const Analysis = ({ month, year }) => {
         ],
     };
 
-    // Trend data logic (Simulated for current and previous months)
+    // F-03: Real trend data logic
     const lineData = {
         labels: MONTHS.slice(0, month + 1),
         datasets: [
             {
-                label: 'Tren Capaian Rata-rata (%)',
+                label: 'Rata-rata Capaian (%)',
                 data: MONTHS.slice(0, month + 1).map((_, idx) => {
-                    // This would ideally fetch data for each month
-                    return Math.floor(Math.random() * 40) + 60; // Simulation
+                    const monthlyAchs = annualAchievements.filter(a => a.month === idx);
+                    if (monthlyAchs.length === 0) return 0;
+
+                    // Calculate average percentage for this month
+                    const percentages = monthlyAchs.map(ach => {
+                        const activity = activities.find(a => a.id === ach.activityId);
+                        if (!activity) return 0;
+                        return Math.min((ach.value / activity.targetValue) * 100, 100);
+                    });
+
+                    const avg = percentages.reduce((sum, p) => sum + p, 0) / percentages.length;
+                    return avg.toFixed(1);
                 }),
                 borderColor: '#0d9488',
-                backgroundColor: '#0d9488',
+                backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                fill: true,
                 tension: 0.3,
             }
         ],
@@ -90,9 +116,17 @@ const Analysis = ({ month, year }) => {
         ],
     };
 
+    if (loading) return <div className="text-muted" style={{ padding: '4rem', textAlign: 'center' }}>Memuat data analisis...</div>;
+    if (error) return (
+        <div style={{ padding: '4rem', textAlign: 'center' }}>
+            <p className="text-danger mb-4">{error}</p>
+            <button className="btn btn-primary" onClick={loadData}>Coba Lagi</button>
+        </div>
+    );
+
     return (
         <div>
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+            <div className="flex gap-2 mb-4" style={{ overflowX: 'auto', paddingBottom: '0.5rem' }}>
                 {CLUSTERS.map(c => (
                     <button
                         key={c.id}
@@ -106,25 +140,26 @@ const Analysis = ({ month, year }) => {
             </div>
 
             {/* Pagination for Charts */}
-            {activities.length > itemsPerPage && (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', background: 'white', padding: '0.75rem', borderRadius: '12px' }}>
+            {activities.length > itemsPerPage && !loading && (
+                <div className="flex items-center gap-4 mb-4" style={{ justifyContent: 'center', background: 'white', padding: '0.75rem', borderRadius: '12px' }}>
                     <button
-                        className="btn btn-outline"
+                        className="btn btn-outline text-sm"
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage(prev => prev - 1)}
-                        style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem' }}
+                        style={{ padding: '0.25rem 0.75rem' }}
                     >
                         Sebelumnya
                     </button>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Tampilkan:</span>
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted">Tampilkan:</span>
                         <select
                             value={itemsPerPage}
                             onChange={(e) => {
                                 setItemsPerPage(Number(e.target.value));
                                 setCurrentPage(1);
                             }}
-                            style={{ padding: '2px 4px', fontSize: '0.75rem', borderRadius: '4px', border: '1px solid var(--border)' }}
+                            className="text-xs"
+                            style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid var(--border)', width: 'auto' }}
                         >
                             <option value={5}>5</option>
                             <option value={10}>10</option>
@@ -132,14 +167,14 @@ const Analysis = ({ month, year }) => {
                             <option value={9999}>Semua</option>
                         </select>
                     </div>
-                    <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)', borderLeft: '1px solid var(--border)', paddingLeft: '1rem' }}>
+                    <span className="text-sm text-muted" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1rem' }}>
                         Data Kegiatan {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, activities.length)} dari {activities.length}
                     </span>
                     <button
-                        className="btn btn-outline"
+                        className="btn btn-outline text-sm"
                         disabled={currentPage >= Math.ceil(activities.length / itemsPerPage)}
                         onClick={() => setCurrentPage(prev => prev + 1)}
-                        style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem' }}
+                        style={{ padding: '0.25rem 0.75rem' }}
                     >
                         Selanjutnya
                     </button>

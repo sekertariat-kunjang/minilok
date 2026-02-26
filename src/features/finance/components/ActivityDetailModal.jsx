@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     X, User, Calendar, DollarSign,
     Link, Copy, Check, ArrowRight,
-    AlertCircle, FileText, Camera, Clock
+    AlertCircle, FileText, Camera, Clock, Trash2
 } from 'lucide-react';
 import { FINANCE_STATUS, STATUS_LABELS } from '../constants/financeConstants';
 import financeService from '../services/FinanceService';
@@ -12,7 +12,7 @@ const ActivityDetailModal = ({ activity, onClose, onRefresh }) => {
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(null);
     const [formData, setFormData] = useState({
-        pptk_name: 'Bendahara Pengeluaran Pembantu', // Hardcoded as requested
+        pptk_name: activity.pptk_name || 'Bendahara Pengeluaran Pembantu',
         petugas_name: activity.petugas_name || '',
         evaluator_name: activity.evaluator_name || '',
         activity_date: activity.activity_date || '',
@@ -52,6 +52,24 @@ const ActivityDetailModal = ({ activity, onClose, onRefresh }) => {
         }
     };
 
+    const handleDelete = async () => {
+        if (!window.confirm(`Apakah Anda yakin ingin menghapus kegiatan "${activity.title}"?`)) {
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await financeService.deleteActivity(activity.id);
+            onRefresh();
+            onClose();
+        } catch (error) {
+            console.error('Delete failed:', error);
+            alert('Gagal menghapus kegiatan: ' + (error.message || error.details || 'Error tidak diketahui'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const renderActionContent = () => {
         switch (activity.status) {
             case FINANCE_STATUS.DRAFT:
@@ -67,8 +85,13 @@ const ActivityDetailModal = ({ activity, onClose, onRefresh }) => {
                     <div className="action-section">
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>PPTK</label>
-                                <input type="text" readOnly value={formData.pptk_name} className="bg-read-only" />
+                                <label>PPTK (Pejabat Pelaksana Teknis Kegiatan)</label>
+                                <input
+                                    type="text"
+                                    value={formData.pptk_name}
+                                    onChange={e => setFormData({ ...formData, pptk_name: e.target.value })}
+                                    placeholder="Masukkan nama atau jabatan PPTK..."
+                                />
                             </div>
                             <div className="form-group">
                                 <label>Petugas (Pelaksana)</label>
@@ -228,6 +251,17 @@ const ActivityDetailModal = ({ activity, onClose, onRefresh }) => {
                     <hr />
 
                     {renderActionContent()}
+
+                    <div className="modal-danger-zone" style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '1px dashed #eee' }}>
+                        <button
+                            className="btn btn-text text-danger"
+                            onClick={handleDelete}
+                            disabled={loading}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', justifyContent: 'center', color: '#dc3545', background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem', fontSize: '0.9rem' }}
+                        >
+                            <Trash2 size={16} /> Hapus Kegiatan ini
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

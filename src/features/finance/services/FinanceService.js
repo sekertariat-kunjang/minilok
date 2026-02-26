@@ -120,6 +120,11 @@ class FinanceService {
 
         if (!activity) throw new Error('Invalid token');
 
+        // F-02 Fix: Validate current status before transition
+        if (activity.status !== FINANCE_STATUS.PENDING_REPORT) {
+            throw new Error('Tautan ini sudah tidak berlaku atau laporan sudah dikirim.');
+        }
+
         return this.transitionStatus(activity.id, FINANCE_STATUS.PENDING_EVALUATION, {
             report_text: reportData.report_text,
             photo_urls: reportData.photo_urls,
@@ -136,6 +141,11 @@ class FinanceService {
             .single();
 
         if (!activity) throw new Error('Invalid token');
+
+        // F-02 Fix: Validate current status before transition
+        if (activity.status !== FINANCE_STATUS.PENDING_EVALUATION) {
+            throw new Error('Tautan ini sudah tidak berlaku atau evaluasi sudah selesai.');
+        }
 
         if (approved) {
             return this.transitionStatus(activity.id, FINANCE_STATUS.PENDING_BPP);
@@ -188,6 +198,16 @@ class FinanceService {
     async deletePersonnel(id) {
         const { error } = await supabase
             .from('finance_personnel')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        return true;
+    }
+
+    async deleteActivity(id) {
+        const { error } = await supabase
+            .from('finance_activities')
             .delete()
             .eq('id', id);
 

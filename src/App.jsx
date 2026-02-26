@@ -16,10 +16,12 @@ import FinanceKanban from './features/finance/components/FinanceKanban';
 import PublicReportForm from './features/finance/components/PublicReportForm';
 import PublicEvaluationForm from './features/finance/components/PublicEvaluationForm';
 import FinanceSettings from './features/finance/components/FinanceSettings';
+import DocGenPrototype from './features/docgen/components/DocGenPrototype';
 
 const MODULE_MINLOK = 'minlok';
 const MODULE_AKREDITASI = 'akreditasi';
 const MODULE_FINANCE = 'finance';
+const MODULE_DOCGEN = 'docgen';
 
 function App() {
   const [activeModule, setActiveModule] = useState(MODULE_MINLOK);
@@ -28,6 +30,17 @@ function App() {
   const [selectedCluster, setSelectedCluster] = useState(CLUSTERS[0]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedActivityIds, setSelectedActivityIds] = useState([]);
+
+  const yearOptions = React.useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return [currentYear - 1, currentYear, currentYear + 1];
+  }, []);
+
+  // Reset selection when period or cluster changes
+  useEffect(() => {
+    setSelectedActivityIds([]);
+  }, [selectedCluster, selectedMonth, selectedYear]);
 
   // Public Link Logic (Petugas/Evaluator)
   const [publicView, setPublicView] = useState(null); // { type: 'report'|'evaluate', token: '...' }
@@ -71,19 +84,29 @@ function App() {
     setOpenAccordion(MODULE_FINANCE);
   };
 
+  const selectDocGen = () => {
+    setActiveModule(MODULE_DOCGEN);
+    setOpenAccordion(MODULE_DOCGEN);
+    setActiveTab('docgen');
+  };
+
   const headerTitle =
     activeModule === MODULE_AKREDITASI
       ? 'Self-Assessment Akreditasi'
       : activeModule === MODULE_FINANCE
         ? activeTab === 'settings' ? 'Pengaturan Personel Keuangan' : 'Pelacakan Pencairan Dana'
-        : minlokTabs.find((t) => t.id === activeTab)?.label ?? '';
+        : activeModule === MODULE_DOCGEN
+          ? 'Pembuat Dokumen (Prototype)'
+          : minlokTabs.find((t) => t.id === activeTab)?.label ?? '';
 
   const headerSubtitle =
     activeModule === MODULE_AKREDITASI
       ? 'Akreditasi Puskesmas 2023'
       : activeModule === MODULE_FINANCE
         ? 'Workflow Manajemen Keuangan'
-        : 'Sistem Pemantauan Kinerja Bulanan';
+        : activeModule === MODULE_DOCGEN
+          ? 'Eksperimen Format DOCX Jitu'
+          : 'Sistem Pemantauan Kinerja Bulanan';
 
   if (publicView) {
     return (
@@ -102,8 +125,8 @@ function App() {
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', letterSpacing: '1px' }}>PUSAKA</h1>
-          <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.25rem', lineHeight: '1.4' }}>
+          <h1 className="font-bold" style={{ fontSize: '1.5rem', letterSpacing: '1px' }}>PUSAKA</h1>
+          <p className="text-xs mt-2" style={{ color: '#94a3b8', lineHeight: '1.4' }}>
             Pusat Data Kinerja Puskesmas Kunjang
           </p>
         </div>
@@ -186,6 +209,7 @@ function App() {
             <div className={`accordion-body ${openAccordion === MODULE_FINANCE ? 'open' : ''}`}>
               <ul className="nav-list">
                 <li
+                  key="tracking"
                   className={`nav-item nav-child ${activeModule === MODULE_FINANCE && activeTab !== 'settings' ? 'active' : ''}`}
                   onClick={() => { selectFinance(); setActiveTab('tracking'); }}
                 >
@@ -193,6 +217,7 @@ function App() {
                   <span>Tracking Dana</span>
                 </li>
                 <li
+                  key="fin-settings"
                   className={`nav-item nav-child ${activeModule === MODULE_FINANCE && activeTab === 'settings' ? 'active' : ''}`}
                   onClick={() => { selectFinance(); setActiveTab('settings'); }}
                 >
@@ -202,9 +227,21 @@ function App() {
               </ul>
             </div>
           </div>
+
+          {/* ─── Prototype DocGen ─── */}
+          <div className="accordion-group">
+            <div
+              className={`nav-item ${activeModule === MODULE_DOCGEN ? 'active module-active' : ''} mt-2`}
+              onClick={selectDocGen}
+              style={{ cursor: 'pointer' }}
+            >
+              <FileText size={18} color={activeModule === MODULE_DOCGEN ? 'white' : '#94a3b8'} />
+              <span>Doc-Gen Prototype</span>
+            </div>
+          </div>
         </nav>
 
-        <div style={{ paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="mt-2" style={{ paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           <div className="nav-item">
             <Settings size={20} />
             <span>Pengaturan</span>
@@ -222,7 +259,7 @@ function App() {
 
           {/* Hanya tampilkan filter bulan/tahun untuk modul Minlok */}
           {activeModule === MODULE_MINLOK && (
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div className="flex gap-4">
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
@@ -235,8 +272,7 @@ function App() {
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                 style={{ width: 'auto' }}
               >
-                <option value={2025}>2025</option>
-                <option value={2026}>2026</option>
+                {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
           )}
@@ -244,9 +280,17 @@ function App() {
 
         {/* Dynamic Content */}
         {activeModule === MODULE_AKREDITASI && <SelfAssessment />}
+        {activeModule === MODULE_DOCGEN && <DocGenPrototype />}
 
         {activeModule === MODULE_MINLOK && activeTab === 'dashboard' && (
-          <Dashboard month={selectedMonth} year={selectedYear} cluster={selectedCluster} onClusterChange={setSelectedCluster} />
+          <Dashboard
+            month={selectedMonth}
+            year={selectedYear}
+            cluster={selectedCluster}
+            onClusterChange={setSelectedCluster}
+            selectedActivityIds={selectedActivityIds}
+            setSelectedActivityIds={setSelectedActivityIds}
+          />
         )}
         {activeModule === MODULE_MINLOK && activeTab === 'entry' && (
           <DataEntry month={selectedMonth} year={selectedYear} />
@@ -255,7 +299,11 @@ function App() {
           <Analysis month={selectedMonth} year={selectedYear} />
         )}
         {activeModule === MODULE_MINLOK && activeTab === 'pdca' && (
-          <PDCA month={selectedMonth} year={selectedYear} />
+          <PDCA
+            month={selectedMonth}
+            year={selectedYear}
+            selectedActivityIds={selectedActivityIds}
+          />
         )}
 
         {activeModule === MODULE_FINANCE && activeTab !== 'settings' && (

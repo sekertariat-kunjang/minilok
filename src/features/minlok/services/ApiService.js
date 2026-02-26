@@ -31,11 +31,9 @@ class ApiService {
 
         if (existing) return existing;
 
-        const newId = `act_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const { data, error } = await supabase
             .from('activities')
             .insert([{
-                id: newId,
                 cluster_id: activity.clusterId,
                 name: activity.name,
                 target_value: activity.targetValue !== undefined ? activity.targetValue : 100,

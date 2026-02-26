@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { CLUSTERS } from '../constants/minlokConstants';
 import { MONTHS } from '../../../core/constants/globalConstants';
 import apiService from '../services/ApiService';
+import { deduplicateByProperty } from '../../../core/utils/DataUtils';
 import { AlertCircle, Save } from 'lucide-react';
 
-const PDCA = ({ month, year }) => {
+const PDCA = ({ month, year, selectedActivityIds }) => {
     const [activeCluster, setActiveCluster] = useState(CLUSTERS[0]);
     const [activities, setActivities] = useState([]);
     const [achievements, setAchievements] = useState([]);
@@ -12,6 +13,7 @@ const PDCA = ({ month, year }) => {
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         loadData();
@@ -20,36 +22,56 @@ const PDCA = ({ month, year }) => {
     }, [activeCluster, month, year]);
 
     const loadData = async () => {
-        const act = await apiService.getActivities(activeCluster.id);
-        const ach = await apiService.getAchievements(month, year, activeCluster.id);
-        setActivities(act);
-        setAchievements(ach);
+        setLoading(true);
+        try {
+            const act = await apiService.getActivities(activeCluster.id);
+            const ach = await apiService.getAchievements(month, year, activeCluster.id);
+            const pdcas = await apiService.getBulkPDCA(month, year, activeCluster.id);
 
-        // Load existing PDCA for all activities in this cluster
-        const pdcaMap = {};
-        for (const a of act) {
-            const p = await apiService.getPDCA(a.id, month, year);
-            if (p) pdcaMap[a.id] = p;
+            setActivities(act);
+            setAchievements(ach);
+
+            // Convert bulk PDCA list to map
+            const pdcaMap = {};
+            pdcas.forEach(p => {
+                pdcaMap[p.activityId] = p;
+            });
+            setPdcaData(pdcaMap);
+        } catch (error) {
+            console.error("Error loading PDCA data:", error);
+        } finally {
+            setLoading(false);
         }
-        setPdcaData(pdcaMap);
     };
 
-    const failedActivities = React.useMemo(() => {
-        const unique = activities.reduce((acc, current) => {
-            const x = acc.find(item => item.id === current.id);
-            if (!x) {
-                return acc.concat([current]);
-            } else {
-                return acc;
-            }
-        }, []);
+    const filteredActivities = React.useMemo(() => {
+        // Step 1: Filter by cluster activities (already filtered in loadData, but let's be safe)
+        // Actually, we show only active cluster's activities.
 
-        return unique.filter(a => {
+        // Step 2: Handle Dashboard selection
+        let displayList = activities;
+        if (selectedActivityIds && selectedActivityIds.length > 0) {
+            displayList = activities.filter(a => selectedActivityIds.includes(a.id));
+        }
+
+        // Deduplicate
+        const unique = deduplicateByProperty(displayList);
+
+        return unique.map(a => {
             const ach = achievements.find(ach => ach.activityId === a.id);
-            if (!ach) return true;
-            return (ach.value / a.targetValue) * 100 < 100;
+            const val = ach ? ach.value : 0;
+
+            // Logic for failure based on polarity
+            let isFailed = false;
+            if (a.polarity === 'negative') {
+                isFailed = val > a.targetValue;
+            } else {
+                isFailed = val < a.targetValue;
+            }
+
+            return { ...a, isFailed, achievementValue: val };
         });
-    }, [activities, achievements]);
+    }, [activities, achievements, selectedActivityIds]);
 
     const handleSavePDCA = async (e) => {
         e.preventDefault();
@@ -99,7 +121,7 @@ const PDCA = ({ month, year }) => {
                 {/* List of failed activities */}
                 <div className="card">
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 className="card-title">Tidak Tercapai</h3>
+                        <h3 className="card-title">Daftar Kegiatan</h3>
                         <select
                             value={itemsPerPage}
                             onChange={(e) => {
@@ -115,26 +137,36 @@ const PDCA = ({ month, year }) => {
                         </select>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        {failedActivities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(a => (
+                        {loading ? (
+                            <p style={{ textAlign: 'center', padding: '2rem' }}>Memuat data...</p>
+                        ) : filteredActivities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(a => (
                             <button
                                 key={a.id}
                                 className={`btn ${selectedActivity?.id === a.id ? 'btn-primary' : 'btn-outline'}`}
-                                style={{ justifyContent: 'space-between', textAlign: 'left' }}
+                                style={{
+                                    justifyContent: 'space-between',
+                                    textAlign: 'left',
+                                    borderLeft: a.isFailed ? '4px solid var(--danger)' : ''
+                                }}
                                 onClick={() => setSelectedActivity(a)}
                             >
-                                <span>{a.name}</span>
-                                <AlertCircle size={14} />
+                                <span style={{ color: a.isFailed ? 'var(--danger)' : 'inherit', fontWeight: a.isFailed ? '600' : 'normal' }}>
+                                    {a.name}
+                                </span>
+                                {a.isFailed && <AlertCircle size={14} color="var(--danger)" />}
                             </button>
                         ))}
-                        {failedActivities.length === 0 && (
+                        {!loading && filteredActivities.length === 0 && (
                             <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
-                                Semua kegiatan tercapai atau data belum diisi.
+                                {selectedActivityIds?.length > 0
+                                    ? "Program yang dipilih tidak ada dalam kluster ini."
+                                    : "Tidak ada data kegiatan."}
                             </p>
                         )}
                     </div>
 
                     {/* Pagination for PDCA List */}
-                    {failedActivities.length > itemsPerPage && (
+                    {filteredActivities.length > itemsPerPage && (
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '1.5rem', padding: '0.5rem', borderTop: '1px solid var(--border)' }}>
                             <button
                                 className="btn btn-outline"
@@ -145,11 +177,11 @@ const PDCA = ({ month, year }) => {
                                 &lt;
                             </button>
                             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                {currentPage}/{Math.ceil(failedActivities.length / itemsPerPage)}
+                                {currentPage}/{Math.ceil(filteredActivities.length / itemsPerPage)}
                             </span>
                             <button
                                 className="btn btn-outline"
-                                disabled={currentPage >= Math.ceil(failedActivities.length / itemsPerPage)}
+                                disabled={currentPage >= Math.ceil(filteredActivities.length / itemsPerPage)}
                                 onClick={() => setCurrentPage(prev => prev + 1)}
                                 style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
                             >
