@@ -17,6 +17,7 @@ import PublicReportForm from './features/finance/components/PublicReportForm';
 import PublicEvaluationForm from './features/finance/components/PublicEvaluationForm';
 import FinanceSettings from './features/finance/components/FinanceSettings';
 import DocGenPrototype from './features/docgen/components/DocGenPrototype';
+import SOPGenerator from './features/docgen/components/SOPGenerator';
 
 const MODULE_MINLOK = 'minlok';
 const MODULE_AKREDITASI = 'akreditasi';
@@ -280,7 +281,12 @@ function App() {
 
         {/* Dynamic Content */}
         {activeModule === MODULE_AKREDITASI && <SelfAssessment />}
-        {activeModule === MODULE_DOCGEN && <DocGenPrototype />}
+        {activeModule === MODULE_DOCGEN && (
+          <div className="flex flex-col gap-6">
+            <DocGenPrototype />
+            <SOPGenerator />
+          </div>
+        )}
 
         {activeModule === MODULE_MINLOK && activeTab === 'dashboard' && (
           <Dashboard
