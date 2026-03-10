@@ -1,0 +1,13 @@
+# Railway Monorepo Configuration
+
+[build]
+builder = "nixpacks"
+# Only rebuild when files in this folder change
+watchPatterns = ["docgen-service/**"]
+
+[deploy]
+# Points Railway to our specific folder
+rootDirectory = "docgen-service"
+# Start command (replaces Procfile if needed, but Procfile also works)
+startCommand = "uvicorn main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/"
