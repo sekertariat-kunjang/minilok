@@ -27,3 +27,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# DocGen Service
+docgen-service/venv/
+docgen-service/__pycache__/
+docgen-service/*.pyc
+docgen-service/error.log
+docgen-service/test_*_output*.docx
+docgen-service/test_sop_table.png
+docgen-service/test_kroki.png
