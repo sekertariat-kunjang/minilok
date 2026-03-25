@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard, FileText, BarChart3, Settings, PlusCircle,
-  ChevronRight, ChevronDown, ClipboardCheck, Activity, DollarSign
+  ChevronRight, ChevronDown, ClipboardCheck, Activity, DollarSign,
+  Menu, X, ChevronLeft
 } from 'lucide-react';
 import { CLUSTERS } from './features/minlok/constants/minlokConstants';
 import { MONTHS } from './core/constants/globalConstants';
@@ -32,6 +33,10 @@ function App() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedActivityIds, setSelectedActivityIds] = useState([]);
+
+  // Sidebar States
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const yearOptions = React.useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -73,22 +78,26 @@ function App() {
     setActiveTab(tabId);
     setActiveModule(MODULE_MINLOK);
     setOpenAccordion(MODULE_MINLOK);
+    if (window.innerWidth < 768) setIsMobileOpen(false);
   };
 
   const selectAkreditasi = () => {
     setActiveModule(MODULE_AKREDITASI);
     setOpenAccordion(MODULE_AKREDITASI);
+    if (window.innerWidth < 768) setIsMobileOpen(false);
   };
 
   const selectFinance = () => {
     setActiveModule(MODULE_FINANCE);
     setOpenAccordion(MODULE_FINANCE);
+    if (window.innerWidth < 768) setIsMobileOpen(false);
   };
 
   const selectDocGen = () => {
     setActiveModule(MODULE_DOCGEN);
     setOpenAccordion(MODULE_DOCGEN);
     setActiveTab('docgen');
+    if (window.innerWidth < 768) setIsMobileOpen(false);
   };
 
   const headerTitle =
@@ -122,14 +131,41 @@ function App() {
   }
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
+      {/* Mobile Top Header (only on small screens) */}
+      <div className="mobile-header no-print">
+        <button className="hamburger-btn" onClick={() => setIsMobileOpen(true)}>
+          <Menu size={24} />
+        </button>
+        <span className="mobile-logo">PUSAKA</span>
+      </div>
+
+      {/* Sidebar Overlay (mobile) */}
+      {isMobileOpen && (
+        <div className="sidebar-overlay no-print" onClick={() => setIsMobileOpen(false)} />
+      )}
+
       {/* Sidebar */}
-      <aside className="sidebar">
+      <aside className={`sidebar no-print ${isSidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
-          <h1 className="font-bold" style={{ fontSize: '1.5rem', letterSpacing: '1px' }}>PUSAKA</h1>
-          <p className="text-xs mt-2" style={{ color: '#94a3b8', lineHeight: '1.4' }}>
-            Pusat Data Kinerja Puskesmas Kunjang
-          </p>
+          {!isSidebarCollapsed && (
+            <div className="logo-section">
+              <h1 className="font-bold">PUSAKA</h1>
+              <p className="text-xs mt-1">Data Kinerja Puskesmas</p>
+            </div>
+          )}
+          <button 
+            className="collapse-toggle" 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            title={isSidebarCollapsed ? "Expand" : "Collapse"}
+          >
+            {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          </button>
+          
+          {/* Mobile close button */}
+          <button className="mobile-close-btn" onClick={() => setIsMobileOpen(false)}>
+            <X size={20} />
+          </button>
         </div>
 
         <nav style={{ flex: 1, overflowY: 'auto' }}>
