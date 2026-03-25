@@ -10,6 +10,8 @@ import { FINANCE_STATUS, STATUS_LABELS, WORKFLOW_ORDER } from '../constants/fina
 import ActivityDetailModal from './ActivityDetailModal';
 import CreateActivityModal from './CreateActivityModal';
 
+const ITEMS_PER_PAGE = 5;
+
 const FinanceKanban = () => {
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,6 +20,7 @@ const FinanceKanban = () => {
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [isCompact, setIsCompact] = useState(false);
     const [activeStage, setActiveStage] = useState('persiapan');
+    const [pages, setPages] = useState({});
 
     const boardRef = useRef(null);
     const isDragging = useRef(false);
@@ -27,6 +30,11 @@ const FinanceKanban = () => {
     useEffect(() => {
         loadActivities();
     }, []);
+
+    // Reset pagination when search term changes
+    useEffect(() => {
+        setPages({});
+    }, [searchTerm]);
 
     const loadActivities = async () => {
         try {
@@ -70,7 +78,7 @@ const FinanceKanban = () => {
     // Draggable Board Logic
     const handleMouseDown = (e) => {
         // Only allow drag if clicking on the board background, not on cards
-        if (e.target.closest('.kanban-card') || e.target.closest('.btn')) return;
+        if (e.target.closest('.kanban-card') || e.target.closest('.btn') || e.target.closest('.pagination-controls')) return;
 
         isDragging.current = true;
         startX.current = e.pageX - boardRef.current.offsetLeft;
@@ -103,6 +111,25 @@ const FinanceKanban = () => {
 
     const getActivitiesByStatus = (status) => {
         return filteredActivities.filter(act => act.status === status);
+    };
+
+    const getPaginatedActivities = (status) => {
+        const allInStatus = getActivitiesByStatus(status);
+        const currentPage = pages[status] || 1;
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return allInStatus.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    };
+
+    const getTotalPages = (status) => {
+        const allInStatus = getActivitiesByStatus(status);
+        return Math.ceil(allInStatus.length / ITEMS_PER_PAGE);
+    };
+
+    const handlePageChange = (status, delta) => {
+        const currentPage = pages[status] || 1;
+        const total = getTotalPages(status);
+        const nextPage = Math.min(Math.max(1, currentPage + delta), total);
+        setPages(prev => ({ ...prev, [status]: nextPage }));
     };
 
     if (loading) {
@@ -168,14 +195,40 @@ const FinanceKanban = () => {
                             {getActivitiesByStatus(status).length === 0 ? (
                                 <div className="empty-column-state">Kosong</div>
                             ) : (
-                                getActivitiesByStatus(status).map(activity => (
-                                    <ActivityCard
-                                        key={activity.id}
-                                        activity={activity}
-                                        isCompact={isCompact}
-                                        onClick={() => setSelectedActivity(activity)}
-                                    />
-                                ))
+                                <>
+                                    <div className="card-list">
+                                        {getPaginatedActivities(status).map(activity => (
+                                            <ActivityCard
+                                                key={activity.id}
+                                                activity={activity}
+                                                isCompact={isCompact}
+                                                onClick={() => setSelectedActivity(activity)}
+                                            />
+                                        ))}
+                                    </div>
+                                    
+                                    {getTotalPages(status) > 1 && (
+                                        <div className="column-pagination">
+                                            <button 
+                                                className="pagination-btn"
+                                                disabled={(pages[status] || 1) === 1}
+                                                onClick={() => handlePageChange(status, -1)}
+                                            >
+                                                <ChevronLeft size={16} />
+                                            </button>
+                                            <span className="pagination-info">
+                                                {pages[status] || 1} / {getTotalPages(status)}
+                                            </span>
+                                            <button 
+                                                className="pagination-btn"
+                                                disabled={(pages[status] || 1) === getTotalPages(status)}
+                                                onClick={() => handlePageChange(status, 1)}
+                                            >
+                                                <ChevronRight size={16} />
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>

@@ -1562,6 +1562,55 @@ textarea:focus {
   flex-direction: column;
   gap: 0.75rem;
   overflow-y: auto;
+  flex: 1;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.column-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.5rem 0.25rem;
+  margin-top: 0.5rem;
+  border-top: 1px dashed var(--border);
+}
+
+.pagination-btn {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .kanban-card {
